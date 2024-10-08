@@ -1,5 +1,5 @@
-use std::{env, path::PathBuf};
-use git2::Repository;
+use std::{env, path::{Path, PathBuf}};
+use git2::{Cred, RemoteCallbacks};
 use home;
 
 pub fn get_providers() -> Vec<String> {
@@ -24,12 +24,49 @@ pub fn update_cache() -> Result<(), String>{
     let home_dir: PathBuf = home::home_dir().unwrap();
     
     let providers = get_providers();
-    
+
+    // Prepare callbacks.
+    let mut callbacks = RemoteCallbacks::new();
+    callbacks.credentials(|_url, username_from_url, _allowed_types| {
+        Cred::ssh_key(
+        username_from_url.unwrap(),
+        None,
+        Path::new(&format!("{}/.ssh/id_rsa", env::var("HOME").unwrap())),
+        None,
+        )
+    });
+
+    // Prepare fetch options.
+    let mut fo = git2::FetchOptions::new();
+    fo.remote_callbacks(callbacks);
+
+    // Prepare builder.
+    let mut builder = git2::build::RepoBuilder::new();
+    builder.fetch_options(fo);
+
     for provider in providers {
+        // Get the project name.
+        let project_name = provider.split("/").last().unwrap();
         
-        let cache_dir = home_dir.join(".cache/hydra");
-        let repo = Repository::clone(&provider, cache_dir);
-    
+        // Get the cache directory.
+        let cache_dir = home_dir.join(".cache/hydra").join(project_name);
+
+        if ! cache_dir.exists() {
+            // Clone the project.
+            print!("Cloning repository {project_name} ({provider})into {provider} ... ");
+            match builder.clone(
+                &provider,
+                &cache_dir,
+            ){
+                Ok(_) => {
+                    println!("Ok");
+                },
+                Err(err) => {
+                    println!("Failed");
+                    return Err(format!("Failed to clone repository: {err}"));
+                },
+            };
+        }
     }
     Ok(())
 }

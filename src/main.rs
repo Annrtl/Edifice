@@ -2,6 +2,7 @@ use clap::{Parser, Subcommand};
 
 mod core;
 mod provider;
+use command::fetch;
 mod command;
 use command::show;
 use command::lock;
@@ -12,6 +13,7 @@ enum Commands {
     /// does testing things
     Show {},
     Lock {},
+    Fetch {},
 }
 
 /// Simple program to greet a person
@@ -32,6 +34,12 @@ fn main() {
         }
         Some(Commands::Lock {}) => {
             lock::lock();
+        }
+        Some(Commands::Fetch {}) => {
+            match fetch::fetch() {
+                Ok(_) => println!("Done"),
+                Err(err) => println!("Command failed: {err}"),
+            };
         }
         None => println!("No command provided"),
     }

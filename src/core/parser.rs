@@ -3,6 +3,12 @@ use std::fs;
 use serde::Deserialize;
 
 #[derive(Deserialize, Debug)]
+pub struct Rule {
+    pub name: String,
+    pub version: String,
+}
+
+#[derive(Deserialize, Debug)]
 pub struct Package {
     pub name: String,
     pub version: String,
@@ -10,6 +16,7 @@ pub struct Package {
 
 #[derive(Deserialize, Debug)]
 pub struct Core {
+    pub rule: Rule,
     pub package: Package,
 }
 
