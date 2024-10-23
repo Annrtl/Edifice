@@ -1,24 +1,20 @@
 use tabled::{Tabled, Table};
 
-use crate::core::parser::get_cores;
+use crate::module::parser::get_module;
 
 #[derive(Tabled)]
-struct CoreDispay {
+struct ModuleDispay {
     name: String,
     version: String,
 }
 
 pub fn show() {
-    let cores = get_cores();
+    let module_file = get_module();
 
-    let mut table_rows: Vec<CoreDispay> = Vec::new();
-
-    for core in cores {
-        table_rows.push(CoreDispay {
-            name: core.package.name,
-            version: core.package.version,
-        });
-    }
+    let table_rows: Vec<ModuleDispay> = vec![ModuleDispay {
+        name: module_file.module.name,
+        version: module_file.module.version,
+    }];
 
     let table = Table::new(&table_rows);
     println!("{}", table);

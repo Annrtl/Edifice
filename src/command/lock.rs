@@ -1,7 +1,6 @@
-use crate::core::parser::get_cores;
+use crate::module::parser::get_module;
 
 pub fn lock() {
-    for core in get_cores() {
-        println!("Locking {}", core.package.name);
-    }
+    let module_file = get_module();
+    println!("Locking {}", module_file.module.name);
 }

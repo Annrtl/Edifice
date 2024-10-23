@@ -1,0 +1,10 @@
+[rule]
+name = "hdl"
+version = "0.1.0"
+
+[module]
+name = "hydra"
+version = "0.1.0"
+
+[dependencies]
+top_a = "0.1.0"

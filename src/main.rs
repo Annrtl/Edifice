@@ -1,11 +1,8 @@
 use clap::{Parser, Subcommand};
 
-mod core;
-mod provider;
-use command::fetch;
-mod command;
-use command::show;
-use command::lock;
+use hydra::command::fetch;
+use hydra::command::show;
+use hydra::command::lock;
 
 
 #[derive(Subcommand)]
