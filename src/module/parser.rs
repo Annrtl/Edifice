@@ -1,5 +1,5 @@
 use glob::glob;
-use std::{collections::HashMap, fs, iter::Map};
+use std::{collections::HashMap, fs};
 
 use serde::Deserialize;
 

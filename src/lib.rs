@@ -1,5 +1,5 @@
 pub mod command;
-mod module;
+pub mod module;
 mod provider;
 pub mod registry;
 mod rule;
