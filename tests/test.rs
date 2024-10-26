@@ -11,16 +11,24 @@ fn test_no_command() {
     assert!(output.status.success());
 
     // Vérifier le contenu de la sortie standard
-    let stdout = String::from_utf8(output.stdout).unwrap();
+    let stdout = match String::from_utf8(output.stdout) {
+        Ok(data) => data,
+        Err(err) => panic!("Failed to get stdout: {}", err),
+    };
     assert!(stdout.contains("No command provided"));
 }
 
 #[test]
 fn test_show() {
-    let test_dir = env::current_dir().unwrap().join("tests");
+    // Get test path
+    let tests_path = match fs::canonicalize(PathBuf::from("tests")) {
+        Ok(path) => path,
+        Err(err) => panic!("Failed to get test path: {}", err),
+    };
+
     // Lancer le binaire
     let output = Command::new(env!("CARGO_BIN_EXE_hydra"))
-        .current_dir(&test_dir)
+        .current_dir(&tests_path)
         .args(&["show"])
         .output()
         .expect("Failed to execute binary");
@@ -29,7 +37,10 @@ fn test_show() {
     assert!(output.status.success());
 
     // Vérifier le contenu de la sortie standard
-    let stdout = String::from_utf8(output.stdout).unwrap();
+    let stdout = match String::from_utf8(output.stdout) {
+        Ok(data) => data,
+        Err(err) => panic!("Failed to get stdout: {}", err),
+    };
     println!("{}", stdout);
     assert!(stdout.contains("hydra"));
     assert!(stdout.contains("0.1.0"));
@@ -43,12 +54,13 @@ fn test_fetch() {
         "git@github.com:Annrtl/hydra_registry.git",
     );
     
-    // Set cache directory
+    // Get test path
     let tests_path = match fs::canonicalize(PathBuf::from("tests")) {
         Ok(path) => path,
         Err(err) => panic!("Failed to get test path: {}", err),
     };
 
+    // Set cache directory
     let cache_path = tests_path.join("cache");
 
     env::set_var("HYDRA_CACHE", cache_path.clone());
@@ -73,7 +85,10 @@ fn test_fetch() {
     assert!(output.status.success());
 
     // Vérifier le contenu de la sortie standard
-    let stdout = String::from_utf8(output.stdout).unwrap();
+    let stdout = match String::from_utf8(output.stdout) {
+        Ok(data) => data,
+        Err(err) => panic!("Failed to get stdout: {}", err),
+    };
     println!("{}", stdout);
     assert!(stdout.contains("Done"));
 
