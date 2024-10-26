@@ -1,9 +1,8 @@
 use clap::{Parser, Subcommand};
 
 use hydra::command::fetch;
-use hydra::command::show;
 use hydra::command::lock;
-
+use hydra::command::show;
 
 #[derive(Subcommand)]
 enum Commands {
@@ -41,4 +40,3 @@ fn main() {
         None => println!("No command provided"),
     }
 }
- 

@@ -1,5 +1,5 @@
-use std::{collections::HashMap, fs, iter::Map};
 use glob::glob;
+use std::{collections::HashMap, fs, iter::Map};
 
 use serde::Deserialize;
 
@@ -22,8 +22,7 @@ pub struct ModuleFile {
     pub dependencies: HashMap<String, String>,
 }
 
-pub fn get_module() -> ModuleFile
- {
+pub fn get_module() -> ModuleFile {
     let module_file = match glob("module.toml") {
         Ok(files) => files,
         Err(_) => panic!("Error reading module.toml"),
@@ -36,11 +35,11 @@ pub fn get_module() -> ModuleFile
             Ok(file) => file,
             Err(_) => panic!("Error reading file"),
         },
-        None => panic!("No module.toml found"),    
+        None => panic!("No module.toml found"),
     };
 
     println!("Found toml file {:?}", file);
-    
+
     // Lire le contenu du fichier TOML
     let content = match fs::read_to_string(file) {
         Ok(data) => data,
@@ -50,9 +49,11 @@ pub fn get_module() -> ModuleFile
     // Désérialiser le fichier TOML en une structure Rust
     let module_file = match toml::from_str(&content) {
         Ok(module_file) => module_file,
-        Err(err) => panic!("Error converting toml content to module_file struct: {:?}", err.message()),
+        Err(err) => panic!(
+            "Error converting toml content to module_file struct: {:?}",
+            err.message()
+        ),
     };
 
     module_file
-
 }

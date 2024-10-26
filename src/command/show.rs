@@ -1,4 +1,4 @@
-use tabled::{Tabled, Table};
+use tabled::{Table, Tabled};
 
 use crate::module::parser::get_module;
 
