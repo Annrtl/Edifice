@@ -2,67 +2,94 @@ use git2::{Cred, RemoteCallbacks};
 use home;
 use std::{
     env,
-    path::{Path, PathBuf},
+    path::PathBuf,
 };
 
-pub fn get_providers() -> Vec<String> {
-    let providers_env_var: Result<String, env::VarError> = env::var("HYDRA_PROVIDERS");
-
-    let mut providers_string: String = String::new();
-
-    match providers_env_var {
-        Ok(data) => {
-            providers_string = data;
-        }
+pub fn get_providers() -> Result<Vec<String>, String> {
+    let providers = match env::var("HYDRA_PROVIDERS") {
+        Ok(data) => data,
         Err(_) => {
             println!("No git provider found");
+            return Err("No git provider found".to_string());
         }
-    }
+    };
 
-    providers_string
+    Ok(
+        providers
         .split(";")
         .map(|s| s.to_string())
         .collect::<Vec<String>>()
+    )
+}
+
+fn get_cache_path() -> Result<PathBuf, String> {
+    let home_path = match home::home_dir() {
+        Some(data) => data,
+        None => return Err("Failed to get home directory".to_string()),
+    };
+
+    let cache_dir = match env::var("HYDRA_CACHE") {
+        Ok(data) => PathBuf::from(data),
+        Err(_) => home_path.join(".cache/hydra"),
+    };
+
+    Ok(cache_dir)
 }
 
 pub fn update_cache() -> Result<(), String> {
-    let home_dir: PathBuf = home::home_dir().unwrap();
+    let providers = match get_providers() {
+        Ok(data) => data,
+        Err(err) => return Err(err),
+    };
 
-    let providers = get_providers();
+    // Get private home directory.
+    let home = match home::home_dir() {
+        Some(data) => data,
+        None => return Err("Failed to get home directory".to_string()),
+    };
+
+    // Get the SSH key path.
+    let private_key_path = home.join(".ssh/id_rsa");
 
     // Prepare callbacks.
     let mut callbacks = RemoteCallbacks::new();
     callbacks.credentials(|_url, username_from_url, _allowed_types| {
         Cred::ssh_key(
-            username_from_url.unwrap(),
+            match username_from_url {
+                Some(username) => username,
+                None => "git",
+            },
             None,
-            Path::new(&format!("{}/.ssh/id_rsa", env::var("HOME").unwrap())),
+            private_key_path.as_path(),
             None,
         )
     });
 
     // Prepare fetch options.
-    let mut fo = git2::FetchOptions::new();
-    fo.remote_callbacks(callbacks);
+    let mut fetch_options = git2::FetchOptions::new();
+    fetch_options.remote_callbacks(callbacks);
 
     // Prepare builder.
     let mut builder = git2::build::RepoBuilder::new();
-    builder.fetch_options(fo);
+    builder.fetch_options(fetch_options);
 
     for provider in providers {
         // Get the project name.
-        let project_name = provider.split("/").last().unwrap();
-
-        // Get the cache directory.
-        let cache_dir = match env::var("HYDRA_CACHE") {
-            Ok(data) => PathBuf::from(data).join(project_name),
-            Err(_) => home_dir.join(".cache/hydra").join(project_name),
+        let project_name = match provider.split("/").last() {
+            Some(data) => data,
+            None => return Err("Failed to get project name".to_string()),
         };
 
-        if !cache_dir.exists() {
+        // Get the cache directory.
+        let cache_path = match get_cache_path() {
+            Ok(data) => data.join(project_name),
+            Err(err) => return Err(err),
+        };
+
+        if ! cache_path.exists() {
             // Clone the project.
-            print!("Cloning repository {project_name} ({provider})into {provider} ... ");
-            match builder.clone(&provider, &cache_dir) {
+            print!("Cloning repository {project_name} ({provider}) into {provider} ... ");
+            match builder.clone(&provider, &cache_path) {
                 Ok(_) => {
                     println!("Ok");
                 }
