@@ -49,7 +49,15 @@ pub fn update_cache() -> Result<(), String>{
         let project_name = provider.split("/").last().unwrap();
         
         // Get the cache directory.
-        let cache_dir = home_dir.join(".cache/hydra").join(project_name);
+        let cache_dir = match env::var("HYDRA_CACHE") {
+            Ok(data) => {
+                PathBuf::from(data).join(project_name)
+            },
+            Err(_) => {
+                home_dir.join(".cache/hydra").join(project_name)
+            }
+            
+        };
 
         if ! cache_dir.exists() {
             // Clone the project.

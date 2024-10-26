@@ -39,6 +39,7 @@ fn test_show() {
 fn test_fetch() {
     // Set HYDRA_PROVIDERS environment variable
     env::set_var("HYDRA_PROVIDERS", "git@github.com:Annrtl/hydra_registry.git");
+    env::set_var("HYDRA_CACHE", "cache/");
     let test_dir = env::current_dir().unwrap().join("tests");
     // Lancer le binaire
     let output = Command::new(env!("CARGO_BIN_EXE_hydra"))
