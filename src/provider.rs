@@ -8,7 +8,9 @@ pub fn get_providers() -> Result<Vec<String>, String> {
     let providers = match env::var("HYDRA_PROVIDERS") {
         Ok(data) => data,
         Err(_) => {
-            return Err("No git provider found".to_string());
+            return Err(
+                "No provider URI found from environment variable: HYDRA_PROVIDERS".to_string(),
+            );
         }
     };
 
@@ -32,6 +34,15 @@ fn get_cache_path() -> Result<PathBuf, String> {
     Ok(cache_dir)
 }
 
+pub fn get_providers_cache_path() -> Result<PathBuf, String> {
+    let cache_path = match get_cache_path() {
+        Ok(data) => data,
+        Err(err) => return Err(err),
+    };
+
+    Ok(cache_path.join("providers"))
+}
+
 pub fn update_providers_cache() -> Result<(), String> {
     let providers = match get_providers() {
         Ok(data) => data,
@@ -46,14 +57,14 @@ pub fn update_providers_cache() -> Result<(), String> {
         };
 
         // Get the cache directory.
-        let cache_path = match get_cache_path() {
-            Ok(data) => data.join("providers"),
+        let providers_cache_path = match get_providers_cache_path() {
+            Ok(data) => data,
             Err(err) => return Err(err),
         };
 
-        let providers_cache_path = cache_path.join(provider_name);
+        let provider_cache_path = providers_cache_path.join(provider_name);
 
-        match download_repository(provider, providers_cache_path) {
+        match download_repository(provider, provider_cache_path) {
             Ok(_) => {}
             Err(err) => return Err(err),
         }

@@ -20,7 +20,7 @@ pub struct Module {
 
 #[derive(Deserialize, Debug)]
 pub struct ModuleFile {
-    pub rule: Rule,
+    pub rule: Option<Rule>,
     pub module: Module,
-    pub dependencies: HashMap<String, VersionReq>,
+    pub dependencies: Option<HashMap<String, VersionReq>>,
 }

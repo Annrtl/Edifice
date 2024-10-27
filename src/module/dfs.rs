@@ -33,10 +33,15 @@ impl Graph {
     }
 
     fn add_vertice_from_module(&mut self, module_file: &ModuleFile) {
+        // Get module dependencies if they exist
+        let module_file_dependencies = match &module_file.dependencies {
+            Some(dependencies) => dependencies.clone(),
+            None => HashMap::new(),
+        };
         let vertice = Vertice::new(
             module_file.module.name.clone(),
             module_file.module.version.clone(),
-            module_file.dependencies.clone(),
+            module_file_dependencies,
         );
         if self.vertex.contains_key(&module_file.module.name) {
             let versions_vertice = match self.vertex.get_mut(&module_file.module.name) {
@@ -209,14 +214,19 @@ impl Graph {
         visiting.push(top_module.clone());
         let top_vertice_versions = match self.vertex.get(&top_module) {
             Some(versions) => versions,
-            None => return Err(vec![format!("Top module {} not found", top_module)]),
+            None => {
+                return Err(vec![format!(
+                    "Top module {} not found in the graph vertices",
+                    top_module
+                )])
+            }
         };
 
         let top_vertice = match top_vertice_versions.get(&top_version) {
             Some(vertice) => vertice,
             None => {
                 return Err(vec![format!(
-                    "Top module {}:{} not found",
+                    "Top module {}:{} not found in the graph vertices",
                     top_module, top_version
                 )])
             }

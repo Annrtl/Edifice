@@ -28,13 +28,22 @@ fn main() {
 
     match args.command {
         Some(Commands::Show {}) => {
-            show::show();
+            match show::show() {
+                Ok(_) => println!("Done"),
+                Err(err) => println!("Command failed: {err}"),
+            };
         }
         Some(Commands::Check {}) => {
-            check::check();
+            match check::check() {
+                Ok(_) => println!("Done"),
+                Err(err) => println!("Command failed: {err}"),
+            };
         }
         Some(Commands::Lock {}) => {
-            lock::lock();
+            match lock::lock() {
+                Ok(_) => println!("Done"),
+                Err(err) => println!("Command failed: {err}"),
+            };
         }
         Some(Commands::Fetch {}) => {
             match fetch::fetch() {
