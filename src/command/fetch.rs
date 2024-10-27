@@ -1,5 +1,5 @@
-use crate::provider::git::update_cache;
+use crate::provider::update_providers_cache;
 
 pub fn fetch() -> Result<(), String> {
-    update_cache()
+    update_providers_cache()
 }
