@@ -1,25 +1,19 @@
 use git2::{Cred, RemoteCallbacks};
 use home;
-use std::{
-    env,
-    path::PathBuf,
-};
+use std::{env, path::PathBuf};
 
 pub fn get_providers() -> Result<Vec<String>, String> {
     let providers = match env::var("HYDRA_PROVIDERS") {
         Ok(data) => data,
         Err(_) => {
-            println!("No git provider found");
             return Err("No git provider found".to_string());
         }
     };
 
-    Ok(
-        providers
+    Ok(providers
         .split(";")
         .map(|s| s.to_string())
-        .collect::<Vec<String>>()
-    )
+        .collect::<Vec<String>>())
 }
 
 fn get_cache_path() -> Result<PathBuf, String> {
@@ -86,7 +80,7 @@ pub fn update_cache() -> Result<(), String> {
             Err(err) => return Err(err),
         };
 
-        if ! cache_path.exists() {
+        if !cache_path.exists() {
             // Clone the project.
             print!("Cloning repository {project_name} ({provider}) into {provider} ... ");
             match builder.clone(&provider, &cache_path) {

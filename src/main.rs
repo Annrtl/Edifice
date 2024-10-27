@@ -1,5 +1,6 @@
 use clap::{Parser, Subcommand};
 
+use hydra::command::check;
 use hydra::command::fetch;
 use hydra::command::lock;
 use hydra::command::show;
@@ -8,6 +9,7 @@ use hydra::command::show;
 enum Commands {
     /// does testing things
     Show {},
+    Check {},
     Lock {},
     Fetch {},
 }
@@ -27,6 +29,9 @@ fn main() {
     match args.command {
         Some(Commands::Show {}) => {
             show::show();
+        }
+        Some(Commands::Check {}) => {
+            check::check();
         }
         Some(Commands::Lock {}) => {
             lock::lock();

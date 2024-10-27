@@ -1,8 +1,8 @@
 use indexmap::IndexMap;
-use semver::Version;
+use semver::{Version, VersionReq};
 use std::collections::{BTreeMap, HashMap};
 
-use crate::module::{Module, Requirement};
+use crate::module::ModuleFile;
 
 pub struct Graph {
     pub vertex: HashMap<String, HashMap<Version, Vertice>>,
@@ -14,8 +14,8 @@ pub struct Vertice {
     version: Version,
     parents: BTreeMap<String, Vec<Version>>,
     children: BTreeMap<String, Vec<Version>>,
-    requirements: Vec<Requirement>,
-    unsatisfied_requirements: Vec<Requirement>,
+    requirements: HashMap<String, VersionReq>,
+    unsatisfied_requirements: HashMap<String, VersionReq>,
 }
 
 impl Graph {
@@ -25,29 +25,30 @@ impl Graph {
         }
     }
 
-    pub fn loads_modules(&mut self, modules: Vec<&Module>) {
+    pub fn loads_modules(&mut self, modules: Vec<&ModuleFile>) {
         for module in &modules {
             self.add_vertice_from_module(module);
         }
         self.update_vertices();
     }
 
-    fn add_vertice_from_module(&mut self, module: &Module) {
+    fn add_vertice_from_module(&mut self, module_file: &ModuleFile) {
         let vertice = Vertice::new(
-            module.name.clone(),
-            module.version.clone(),
-            module.requirements.clone(),
+            module_file.module.name.clone(),
+            module_file.module.version.clone(),
+            module_file.dependencies.clone(),
         );
-        if self.vertex.contains_key(&module.name) {
-            let versions_vertice = match self.vertex.get_mut(&module.name) {
+        if self.vertex.contains_key(&module_file.module.name) {
+            let versions_vertice = match self.vertex.get_mut(&module_file.module.name) {
                 Some(versions) => versions,
                 None => return,
             };
-            versions_vertice.insert(module.version.clone(), vertice);
+            versions_vertice.insert(module_file.module.version.clone(), vertice);
         } else {
             let mut versions_vertice = HashMap::new();
-            versions_vertice.insert(module.version.clone(), vertice);
-            self.vertex.insert(module.name.clone(), versions_vertice);
+            versions_vertice.insert(module_file.module.version.clone(), vertice);
+            self.vertex
+                .insert(module_file.module.name.clone(), versions_vertice);
         }
     }
 
@@ -236,14 +237,14 @@ impl Graph {
 }
 
 impl Vertice {
-    fn new(name: String, version: Version, requirements: Vec<Requirement>) -> Vertice {
+    fn new(name: String, version: Version, requirements: HashMap<String, VersionReq>) -> Vertice {
         Vertice {
             name: name,
             version: version,
             parents: BTreeMap::new(),
             children: BTreeMap::new(),
             requirements: requirements,
-            unsatisfied_requirements: Vec::new(),
+            unsatisfied_requirements: HashMap::new(),
         }
     }
 
@@ -254,18 +255,18 @@ impl Vertice {
     }
 
     fn add_children_from_graph(&mut self, vertex: HashMap<String, HashMap<Version, Vertice>>) {
-        for requirement in self.requirements.clone() {
-            let requirement_vertex = match vertex.get(&requirement.module) {
+        for (dep_name, dep_req) in self.requirements.clone() {
+            let requirement_vertex = match vertex.get(&dep_name) {
                 Some(versions) => versions,
                 None => {
-                    self.unsatisfied_requirements.push(requirement);
+                    self.unsatisfied_requirements.insert(dep_name, dep_req);
                     continue;
                 }
             };
-            match self.add_children_from_requirement(requirement.clone(), requirement_vertex) {
+            match self.add_children_from_requirement(dep_req.clone(), requirement_vertex) {
                 Ok(_) => continue,
                 Err(_) => {
-                    self.unsatisfied_requirements.push(requirement);
+                    self.unsatisfied_requirements.insert(dep_name, dep_req);
                 }
             }
         }
@@ -273,13 +274,13 @@ impl Vertice {
 
     fn add_children_from_requirement(
         &mut self,
-        requirement: Requirement,
+        dep_req: VersionReq,
         vertex: &HashMap<Version, Vertice>,
     ) -> Result<(), ()> {
         let mut satisfied = false;
 
         for (version, vertice) in vertex.iter() {
-            if requirement.constraint.matches(version) {
+            if dep_req.matches(version) {
                 self.add_children(vertice.name.clone(), version.clone());
                 satisfied = true;
             }
@@ -335,11 +336,8 @@ impl Vertice {
 
     fn get_unsatisfied_requirements_string(&self) -> String {
         let mut result = String::new();
-        for requirement in &self.unsatisfied_requirements {
-            result.push_str(&format!(
-                "\t{}: {}\n",
-                requirement.module, requirement.constraint
-            ));
+        for (dep_name, dep_req) in &self.unsatisfied_requirements {
+            result.push_str(&format!("\t{}: {}\n", dep_name, dep_req));
         }
         result
     }
