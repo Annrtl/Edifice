@@ -1,3 +1,5 @@
+use semver::Version;
+
 use crate::module::dfs::Graph;
 use crate::module::parser::get_module_file;
 use crate::module::parser::get_module_files;
@@ -5,7 +7,7 @@ use crate::module::ModuleFile;
 use crate::provider::get_providers_cache_path;
 use crate::provider::update_providers_cache;
 
-pub fn check() -> Result<(), String> {
+pub fn check() -> Result<Vec<(String, Version)>, String> {
     match update_providers_cache() {
         Ok(_) => println!("Providers cache updated"),
         Err(err) => eprintln!("Failed to update providers cache: {}", err),
@@ -52,11 +54,5 @@ pub fn check() -> Result<(), String> {
         Err(err) => return Err(err.concat()),
     };
 
-    println!("Resolved modules:");
-
-    for (name, version) in resolve_modules {
-        println!("  - {}:{}", name, version);
-    }
-
-    Ok(())
+    Ok(resolve_modules)
 }

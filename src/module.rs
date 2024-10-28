@@ -4,6 +4,7 @@ use semver::{Version, VersionReq};
 use serde::Deserialize;
 
 pub mod dfs;
+pub mod lock;
 pub mod parser;
 
 #[derive(Deserialize, Debug)]

@@ -2,15 +2,15 @@ use clap::{Parser, Subcommand};
 
 use hydra::command::check;
 use hydra::command::fetch;
-use hydra::command::lock;
 use hydra::command::show;
+use hydra::command::update;
 
 #[derive(Subcommand)]
 enum Commands {
     /// does testing things
     Show {},
     Check {},
-    Lock {},
+    Update {},
     Fetch {},
 }
 
@@ -39,8 +39,8 @@ fn main() {
                 Err(err) => println!("Command failed: {err}"),
             };
         }
-        Some(Commands::Lock {}) => {
-            match lock::lock() {
+        Some(Commands::Update {}) => {
+            match update::update() {
                 Ok(_) => println!("Done"),
                 Err(err) => println!("Command failed: {err}"),
             };
