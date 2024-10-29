@@ -8,12 +8,6 @@ pub mod lock;
 pub mod parser;
 
 #[derive(Deserialize, Debug)]
-struct Rule {
-    pub name: String,
-    pub version: Version,
-}
-
-#[derive(Deserialize, Debug)]
 pub struct Module {
     pub name: String,
     pub version: Version,
@@ -21,7 +15,6 @@ pub struct Module {
 
 #[derive(Deserialize, Debug)]
 pub struct ModuleFile {
-    pub rule: Option<Rule>,
     pub module: Module,
     pub dependencies: Option<HashMap<String, VersionReq>>,
 }
