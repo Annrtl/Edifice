@@ -7,4 +7,4 @@ name = "hydra"
 version = "0.1.0"
 
 [dependencies]
-top_a = "0.1.0"
+wb_streamer = "1.1.0"

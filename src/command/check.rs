@@ -7,6 +7,7 @@ use crate::module::ModuleFile;
 use crate::provider::get_providers_cache_path;
 use crate::provider::update_providers_cache;
 
+/// Check the satisfiability of the module
 pub fn check() -> Result<Vec<(String, Version)>, String> {
     match update_providers_cache() {
         Ok(_) => println!("Providers cache updated"),
@@ -51,8 +52,12 @@ pub fn check() -> Result<Vec<(String, Version)>, String> {
 
     let resolve_modules = match graph.dfs(top_module.module.name, top_module.module.version) {
         Ok(data) => data,
-        Err(err) => return Err(err.concat()),
+        Err(err) => return Err(err),
     };
+
+    for module in &resolve_modules {
+        println!("Module: {}:{} is resolved", module.0, module.1);
+    }
 
     Ok(resolve_modules)
 }

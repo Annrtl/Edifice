@@ -2,6 +2,7 @@ use clap::{Parser, Subcommand};
 
 use hydra::command::check;
 use hydra::command::fetch;
+use hydra::command::list;
 use hydra::command::show;
 use hydra::command::update;
 
@@ -9,6 +10,7 @@ use hydra::command::update;
 enum Commands {
     /// does testing things
     Show {},
+    List {},
     Check {},
     Update {},
     Fetch {},
@@ -29,6 +31,12 @@ fn main() {
     match args.command {
         Some(Commands::Show {}) => {
             match show::show() {
+                Ok(_) => println!("Done"),
+                Err(err) => println!("Command failed: {err}"),
+            };
+        }
+        Some(Commands::List {}) => {
+            match list::list() {
                 Ok(_) => println!("Done"),
                 Err(err) => println!("Command failed: {err}"),
             };

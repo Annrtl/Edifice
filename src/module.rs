@@ -14,7 +14,14 @@ pub struct Module {
 }
 
 #[derive(Deserialize, Debug)]
+pub struct Provider {
+    pub uri: String,
+    pub commit: Option<String>,
+}
+
+#[derive(Deserialize, Debug)]
 pub struct ModuleFile {
     pub module: Module,
     pub dependencies: Option<HashMap<String, VersionReq>>,
+    pub provider: Option<Provider>,
 }

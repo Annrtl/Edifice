@@ -103,44 +103,44 @@ impl Graph {
         name: String,
         versions: &Vec<Version>,
     ) -> Result<(), Vec<String>> {
-        // Create errors vector
-        let mut errors: Vec<String> = Vec::new();
-
         // Check for cycles
         if visiting.contains(&name) {
             let message: String = format!("Cycle detected: {} -> {}", visiting.join(" -> "), name);
-            errors.push(message);
-            return Err(errors);
+            #[cfg(debug_assertions)]
+            println!("{}", message);
+            return Err(vec![message]);
         } else {
             visiting.push(name.clone());
         }
+
+        // If a module version is already visited
+        match visited.contains_key(&name) {
+            true => {
+                visiting.pop();
+                return Ok(());
+            }
+            false => {}
+        }
+
+        let mut messages: Vec<String> = Vec::new();
+
         // For each version of the dependency module
         for version in versions {
-            // If a module version is already visited
-            match visited.get(&name) {
-                Some(visited_version) => {
-                    if visited_version.eq(&version) {
-                        continue;
-                    }
-                }
-                None => {}
-            }
-
             let child_vertice_versions = match self.vertex.get(&name) {
                 Some(versions) => versions,
                 None => {
-                    errors.push(format!("Module {} not found", name));
+                    let message = format!("Module {} not found", name);
                     visiting.pop();
-                    return Err(errors);
+                    return Err(vec![message]);
                 }
             };
 
             let child_vertice = match child_vertice_versions.get(&version) {
                 Some(vertice) => vertice,
                 None => {
-                    errors.push(format!("Module {}:{} not found", name, version));
+                    let message = format!("Module {}:{} not found", name, version);
                     visiting.pop();
-                    return Err(errors);
+                    return Err(vec![message]);
                 }
             };
 
@@ -153,23 +153,53 @@ impl Graph {
                     #[cfg(debug_assertions)]
                     println!("Added {:?}", name);
                     #[cfg(debug_assertions)]
-                    println!("Visited {:?}", visited);
+                    println!(
+                        "Visited {:?}",
+                        visited
+                            .iter()
+                            .map(|(name, version)| format!("{}:{}", name, version))
+                            .collect::<Vec<String>>()
+                    );
+                    #[cfg(debug_assertions)]
+                    println!(
+                        "Visiting {:?}",
+                        visiting
+                            .iter()
+                            .map(|name| format!("{}", name))
+                            .collect::<Vec<String>>()
+                    );
 
                     return Ok(());
                 }
-                Err(messages) => {
-                    errors.push(messages.iter().map(|x| x.clone()).collect());
+                Err(err_messages) => {
                     visiting.pop();
                     visited.shift_remove(&name);
+                    err_messages.iter().for_each(|message| {
+                        messages.push(message.clone());
+                    });
 
                     #[cfg(debug_assertions)]
                     println!("Removed {:?}", name);
                     #[cfg(debug_assertions)]
-                    println!("Visited {:?}", visited);
+                    println!(
+                        "Visited {:?}",
+                        visited
+                            .iter()
+                            .map(|(name, version)| format!("{}:{}", name, version))
+                            .collect::<Vec<String>>()
+                    );
+                    #[cfg(debug_assertions)]
+                    println!(
+                        "Visiting {:?}",
+                        visiting
+                            .iter()
+                            .map(|name| format!("{}", name))
+                            .collect::<Vec<String>>()
+                    );
                 }
             }
         }
-        return Err(errors);
+        return Err(messages);
     }
 
     fn dfs_recursive(
@@ -197,7 +227,14 @@ impl Graph {
         for (name, versions) in &vertice.children {
             match self.dfs_recursive_versions(visited, visiting, name.clone(), versions) {
                 Ok(_) => continue,
-                Err(messages) => return Err(messages),
+                Err(mut messages) => {
+                    let message = format!(
+                        "No version of {} satisfy the requirements of {}:{}",
+                        name, vertice.name, vertice.version
+                    );
+                    messages.push(message);
+                    return Err(messages);
+                }
             }
         }
         return Ok(());
@@ -207,7 +244,7 @@ impl Graph {
         &mut self,
         top_module: String,
         top_version: Version,
-    ) -> Result<Vec<(String, Version)>, Vec<String>> {
+    ) -> Result<Vec<(String, Version)>, String> {
         self.sort_children();
         let mut visited: IndexMap<String, Version> = IndexMap::new();
         let mut visiting: Vec<String> = Vec::new();
@@ -215,20 +252,20 @@ impl Graph {
         let top_vertice_versions = match self.vertex.get(&top_module) {
             Some(versions) => versions,
             None => {
-                return Err(vec![format!(
+                return Err(format!(
                     "Top module {} not found in the graph vertices",
                     top_module
-                )])
+                ))
             }
         };
 
         let top_vertice = match top_vertice_versions.get(&top_version) {
             Some(vertice) => vertice,
             None => {
-                return Err(vec![format!(
+                return Err(format!(
                     "Top module {}:{} not found in the graph vertices",
                     top_module, top_version
-                )])
+                ))
             }
         };
 
@@ -241,7 +278,10 @@ impl Graph {
                 }
                 Ok(result)
             }
-            Err(messages) => Err(messages),
+            Err(messages) => Err(format!(
+                "DFS resolution failed for deep reason(s):\n  - {}",
+                messages.join("\n  - ")
+            )),
         }
     }
 }
