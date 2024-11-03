@@ -1,5 +1,7 @@
 use std::{env, fs, path::PathBuf, process::Command};
 
+use serial_test::serial;
+
 fn get_tests_path() -> Result<PathBuf, std::io::Error> {
     // Get test path
     fs::canonicalize(PathBuf::from("tests"))
@@ -32,6 +34,7 @@ fn get_cache_path() -> Result<PathBuf, std::io::Error> {
 }
 
 #[test]
+#[serial]
 fn test_no_command() {
     // Lancer le binaire
     let output = Command::new(env!("CARGO_BIN_EXE_hydra"))
@@ -50,6 +53,7 @@ fn test_no_command() {
 }
 
 #[test]
+#[serial]
 fn test_show() {
     // Setup env
     let _ = set_provider();
@@ -82,6 +86,7 @@ fn test_show() {
 }
 
 #[test]
+#[serial]
 fn test_list() {
     // Setup env
     let _ = set_provider();
@@ -135,6 +140,7 @@ fn test_list() {
 }
 
 #[test]
+#[serial]
 fn test_fetch() {
     // Setup env
     let _ = set_provider();
@@ -209,6 +215,7 @@ fn test_fetch() {
 }
 
 #[test]
+#[serial]
 fn test_check() {
     // Setup env
     let _ = set_provider();
@@ -246,6 +253,7 @@ fn test_check() {
 }
 
 #[test]
+#[serial]
 fn test_update() {
     // Setup env
     let _ = set_provider();
