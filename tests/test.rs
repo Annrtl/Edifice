@@ -277,12 +277,12 @@ fn test_update() {
     let lockfile_path = tests_path.join("module.lock");
     assert!(std::path::Path::new(&lockfile_path).exists());
 
-    if std::path::Path::new(&lockfile_path).exists() {
-        match std::fs::remove_file(lockfile_path.clone()) {
-            Ok(_) => (),
-            Err(err) => panic!("Failed to remove lockfile: {}", err),
-        }
-    }
+    // if std::path::Path::new(&lockfile_path).exists() {
+    //     match std::fs::remove_file(lockfile_path.clone()) {
+    //         Ok(_) => (),
+    //         Err(err) => panic!("Failed to remove lockfile: {}", err),
+    //     }
+    // }
 
     let cache_path = match get_cache_path() {
         Ok(path) => path,

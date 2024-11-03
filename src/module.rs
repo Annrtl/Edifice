@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use semver::{Version, VersionReq};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 pub mod dfs;
 pub mod lock;
@@ -24,4 +24,18 @@ pub struct ModuleFile {
     pub module: Module,
     pub dependencies: Option<HashMap<String, VersionReq>>,
     pub provider: Option<Provider>,
+}
+
+#[derive(Serialize)]
+pub struct LockPackage {
+    pub name: String,
+    pub version: Version,
+    pub uri: String,
+    pub commit: Option<String>,
+}
+
+#[derive(Serialize)]
+pub struct LockFile {
+    pub version: u8,
+    pub packages: Vec<LockPackage>,
 }

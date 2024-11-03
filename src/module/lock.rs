@@ -1,24 +1,15 @@
-use std::collections::HashMap;
+use super::{LockFile, LockPackage};
 
-use semver::Version;
-use serde::Serialize;
-
-#[derive(Serialize)]
-struct LockFile {
-    version: u8,
-    packages: HashMap<String, Version>,
-}
-
-pub fn lock(modules: Vec<(String, Version)>) -> Result<(), String> {
+pub fn lock(packages: Vec<LockPackage>) -> Result<(), String> {
     // Create a new lock file
     let mut lock_file = LockFile {
         version: 1,
-        packages: HashMap::new(),
+        packages: Vec::new(),
     };
 
     // Insert all resolved modules into the lock file
-    for (name, version) in modules {
-        lock_file.packages.insert(name, version);
+    for package in packages {
+        lock_file.packages.push(package);
     }
 
     // Serialize the lock file
