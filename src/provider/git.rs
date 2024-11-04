@@ -1,8 +1,8 @@
 use std::path::PathBuf;
 
-use git2::{Cred, RemoteCallbacks};
+use git2::{Cred, Error, Oid, RemoteCallbacks, Repository};
 
-pub fn download_repository(uri: String, path: PathBuf) -> Result<(), String> {
+pub fn download_repository(uri: String, path: PathBuf, branch: Option<String>) -> Result<(), String> {
     // Get private home directory.
     let home = match home::home_dir() {
         Some(data) => data,
@@ -44,6 +44,11 @@ pub fn download_repository(uri: String, path: PathBuf) -> Result<(), String> {
         // Display message.
         print!("Cloning repository {uri} into {provider_cache_path_str} ... ");
 
+        // Set the branch.
+        if branch.is_some() {
+            builder.branch(branch.unwrap().as_str());
+        }
+
         // Clone the repository.
         match builder.clone(&uri, &path) {
             Ok(_) => {
@@ -55,5 +60,30 @@ pub fn download_repository(uri: String, path: PathBuf) -> Result<(), String> {
             }
         };
     }
+    Ok(())
+}
+
+pub fn clone_and_checkout(repo_url: &str, dest_path: PathBuf, commit_hash: Option<String>) -> Result<(), Error> {
+    // Clone le dépôt dans le chemin de destination
+    let repo = Repository::clone(repo_url, dest_path)?;
+
+    match commit_hash {
+        Some(hash) => {
+            // Trouver l'ID de l'objet (le commit) correspondant au hash spécifié
+            let oid = Oid::from_str(&hash)?;
+            let object = repo.find_object(oid, None)?;
+
+            // Effectuer le checkout sur le commit spécifié
+            repo.checkout_tree(&object, None)?;
+            repo.set_head_detached(oid)?;
+
+            println!("Repository cloned and checked out to commit {}", hash);
+        },
+        None => {
+            println!("Repository cloned");
+        },
+    }
+
+    
     Ok(())
 }

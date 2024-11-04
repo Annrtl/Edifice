@@ -298,3 +298,30 @@ fn test_update() {
         }
     }
 }
+
+#[test]
+#[serial]
+fn test_install() {
+    // Setup env
+    let _ = set_provider();
+    let _ = set_cache_path();
+    let tests_path = match get_tests_path() {
+        Ok(path) => path,
+        Err(err) => panic!("Failed to get test path: {}", err),
+    };
+
+    println!("Running install ...");
+
+    // Lancer le binaire
+    let output = Command::new(env!("CARGO_BIN_EXE_hydra"))
+        .current_dir(&tests_path)
+        .args(&["install"])
+        .output()
+        .expect("Failed to execute binary");
+
+    println!("Ran install ...");
+
+    // Vérifier que l'exécution est réussie
+    assert!(output.status.success());
+
+}

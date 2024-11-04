@@ -64,7 +64,7 @@ pub fn update_providers_cache() -> Result<(), String> {
 
         let provider_cache_path = providers_cache_path.join(provider_name);
 
-        match download_repository(provider, provider_cache_path) {
+        match download_repository(provider, provider_cache_path, None) {
             Ok(_) => {}
             Err(err) => return Err(err),
         }

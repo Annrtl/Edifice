@@ -26,7 +26,7 @@ pub struct ModuleFile {
     pub provider: Option<Provider>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize)]
 pub struct LockPackage {
     pub name: String,
     pub version: Version,
@@ -34,7 +34,7 @@ pub struct LockPackage {
     pub commit: Option<String>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize)]
 pub struct LockFile {
     pub version: u8,
     pub packages: Vec<LockPackage>,
