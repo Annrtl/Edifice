@@ -54,7 +54,7 @@ pub fn install() -> Result<(), String> {
             Ok(_) => {
                 println!("Downloaded package: {}", package.name);
             }
-            Err(err) => return Err(err.message().to_string()),
+            Err(err) => return Err(err),
         }
     }
     Ok(())
