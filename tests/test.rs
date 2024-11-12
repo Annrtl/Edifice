@@ -124,19 +124,6 @@ fn test_list() {
     assert!(stdout.contains("hydra"));
     assert!(stdout.contains("wb_streamer"));
 
-    let cache_path = match get_cache_path() {
-        Ok(path) => path,
-        Err(err) => panic!("Failed to get cache path: {}", err),
-    };
-
-    // Remove cache directory
-    if std::path::Path::new(&cache_path).exists() {
-        println!("Removing cache directory");
-        match std::fs::remove_dir_all(cache_path.clone()) {
-            Ok(_) => (),
-            Err(err) => panic!("Failed to remove cache directory: {}", err),
-        }
-    }
 }
 
 #[test]
@@ -199,19 +186,6 @@ fn test_fetch() {
     println!("{}", stdout);
     assert!(stdout.contains("Done"));
 
-    let cache_path = match get_cache_path() {
-        Ok(path) => path,
-        Err(err) => panic!("Failed to get cache path: {}", err),
-    };
-
-    // Remove cache directory
-    if std::path::Path::new(&cache_path).exists() {
-        println!("Removing cache directory");
-        match std::fs::remove_dir_all(cache_path.clone()) {
-            Ok(_) => (),
-            Err(err) => panic!("Failed to remove cache directory: {}", err),
-        }
-    }
 }
 
 #[test]
@@ -237,19 +211,6 @@ fn test_check() {
     // Vérifier que l'exécution est réussie
     assert!(output.status.success());
 
-    let cache_path = match get_cache_path() {
-        Ok(path) => path,
-        Err(err) => panic!("Failed to get cache path: {}", err),
-    };
-
-    // Remove cache directory
-    if std::path::Path::new(&cache_path).exists() {
-        println!("Removing cache directory");
-        match std::fs::remove_dir_all(cache_path.clone()) {
-            Ok(_) => (),
-            Err(err) => panic!("Failed to remove cache directory: {}", err),
-        }
-    }
 }
 
 #[test]
@@ -277,26 +238,6 @@ fn test_update() {
     let lockfile_path = tests_path.join("module.lock");
     assert!(std::path::Path::new(&lockfile_path).exists());
 
-    // if std::path::Path::new(&lockfile_path).exists() {
-    //     match std::fs::remove_file(lockfile_path.clone()) {
-    //         Ok(_) => (),
-    //         Err(err) => panic!("Failed to remove lockfile: {}", err),
-    //     }
-    // }
-
-    let cache_path = match get_cache_path() {
-        Ok(path) => path,
-        Err(err) => panic!("Failed to get cache path: {}", err),
-    };
-
-    // Remove cache directory
-    if std::path::Path::new(&cache_path).exists() {
-        println!("Removing cache directory");
-        match std::fs::remove_dir_all(cache_path.clone()) {
-            Ok(_) => (),
-            Err(err) => panic!("Failed to remove cache directory: {}", err),
-        }
-    }
 }
 
 #[test]
