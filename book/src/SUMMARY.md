@@ -5,7 +5,7 @@
 # User Guide
 - [Installation](./user_guide/installation.md)
 - [Environement](./user_guide/environement.md)
-- [Libraries](./user_guide/libraries.md)
+- [Registry](./user_guide/registry.md)
 - [Create a module](./user_guide/create.md)
 - [Build a module](./user_guide/build.md)
 
@@ -39,6 +39,5 @@
   - [Publish](./reference_guide/commands/publish.md)
   - [Run](./reference_guide/commands/run.md)
   - [Search](./reference_guide/commands/search.md)
-  - [Show](./reference_guide/commands/show.md)
   - [Update](./reference_guide/commands/update.md)
   - [Version](./reference_guide/commands/version.md)

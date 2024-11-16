@@ -8,13 +8,13 @@ Hydra is a package manager and build automation tool adapted to the hardware ind
 
 ### Limitations of Fusesoc
 
-Python project Fusesoc is not able to efficiently load thousants cores from a library:
+Python project Fusesoc is not able to efficiently load thousants modules from a registry:
   - Python is very slow
   - Fusesoc resolve the dependency three for each command
   - The fileset is not flexible enough
   - Compilation options are common to the whole dependency three
-  - Core API and backend tools are not versionned as core
-  - Flags has an impact on core dependencies
+  - Module API and backend tools are not versionned as module
+  - Flags has an impact on module dependencies
   - Build are not lockable which prevent reproducibility
 
 ### Limitations of Edalize
@@ -54,10 +54,7 @@ The transitive data management is done through the file dataset.toml of each mod
 ``` toml
 # dataset.toml of module_b
 
-dataset_api = "0.1.0"
-
-[dataset.dataset_a]
-rule = "rule_eda"
+[eda.dataset.dataset_a]
 sources = [
   "file_e",
   "file_f",
@@ -73,10 +70,7 @@ prepend = []
 ``` toml
 # dataset.toml of module_a
 
-dataset_api = "0.1.0"
-
-[dataset.dataset_a]
-rule = "rule_eda"
+[eda.dataset.dataset_a]
 sources = [
   "file_a",
   "file_b",
@@ -91,8 +85,7 @@ prepend = [
   "module_c.dataset_a",
 ]
 
-[dataset.dataset_b]
-rule = "rule_eda"
+[eda.dataset.dataset_b]
 sources = [
   "file_c",
   "file_d",
@@ -116,7 +109,7 @@ prepend = [
 
 ## Dependencies management
 
-### Fetch library
+### Fetch registry
 ### Add dependencies to module
 ### Check module satisfability
 ### Update dependencies version into lock file
