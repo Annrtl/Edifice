@@ -6,8 +6,11 @@
 - [Installation](./user_guide/installation.md)
 - [Environement](./user_guide/environement.md)
 - [Registry](./user_guide/registry.md)
-- [Create a module](./user_guide/create.md)
-- [Build a module](./user_guide/build.md)
+- [Files](./user_guide/files.md)
+- [Module](./user_guide/module.md)
+- [Dataset](./user_guide/dataset.md)
+- [Target](./user_guide/target.md)
+- [Build](./user_guide/build.md)
 
 # Reference guide
 - [Module](./reference_guide/module.md)
