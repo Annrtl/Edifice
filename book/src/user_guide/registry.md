@@ -1,4 +1,4 @@
-# Registry
+# Add a Registry
 
 ## Description
 
@@ -46,7 +46,7 @@ HYDRA_REGISTRY = 'git@github.com:Annrtl/Hydra_registry.git:/project/registry'
 
 It is recommanded to put a file `module.toml` in a a folder `name/version/module.toml`
 
-### Lcoal directory
+### Local directory
 
 1. Create a new directory
 2. For each module to index add a `module.toml` anywhere in the repository.

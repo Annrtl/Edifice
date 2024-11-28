@@ -5,12 +5,12 @@
 # User Guide
 - [Installation](./user_guide/installation.md)
 - [Environement](./user_guide/environement.md)
-- [Registry](./user_guide/registry.md)
-- [Files](./user_guide/files.md)
-- [Module](./user_guide/module.md)
-- [Dataset](./user_guide/dataset.md)
-- [Target](./user_guide/target.md)
-- [Build](./user_guide/build.md)
+- [Add a registry](./user_guide/registry.md)
+- [Workspace files](./user_guide/files.md)
+- [Create your module](./user_guide/module.md)
+- [Create your dataset](./user_guide/dataset.md)
+- [Create your target](./user_guide/target.md)
+- [Build your project](./user_guide/build.md)
 
 # Reference guide
 - [Module](./reference_guide/module.md)
