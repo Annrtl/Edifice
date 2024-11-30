@@ -1,0 +1,13 @@
+[module]
+name="wb_streamer"
+version="1.1.0"
+
+[dependencies]
+"fifo"=">=1.0.0"
+"stream_utils"=">=1.1.0"
+"vlog_tb_utils"=">=1.0.0"
+"wb_bfm"=">=1.0.0"
+
+[provider]
+uri = "git@github.com:Annrtl/wb_streamer.git"
+commit = "2e85e60f9901adabdf8b9e354b9e95aaf3f189bf"

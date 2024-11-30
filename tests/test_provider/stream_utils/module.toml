@@ -1,0 +1,11 @@
+[module]
+name="stream_utils"
+version="1.3.0"
+
+[dependencies]
+"vlog_tb_utils"=">=1.1.0"
+"fifo"=">=1.2.0"
+
+[provider]
+uri = "git@github.com:Annrtl/stream_utils.git"
+commit = "009b7e4349e74f54da2faff15b3afef3cf2cc5d2"

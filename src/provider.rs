@@ -50,6 +50,11 @@ pub fn update_providers_cache() -> Result<(), String> {
     };
 
     for provider in providers {
+        // Do not cache local providers.
+        if provider.starts_with("/") {
+            println!("Not caching local provider: {}", provider);
+            continue;
+        }
         // Get the project name.
         let provider_name = match provider.split("/").last() {
             Some(data) => data,

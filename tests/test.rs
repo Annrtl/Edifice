@@ -7,11 +7,26 @@ fn get_tests_path() -> Result<PathBuf, std::io::Error> {
     fs::canonicalize(PathBuf::from("tests"))
 }
 
-fn set_provider() -> Result<(), String> {
+fn set_git_provider() -> Result<(), String> {
     env::set_var(
         "HYDRA_PROVIDERS",
         //"git@github.com:Annrtl/hydra_registry.git",
         "git@github.com:Annrtl/fusesoc-cores.git",
+    );
+    Ok(())
+}
+
+fn set_local_provider() -> Result<(), String> {
+    // Get test path
+    let tests_path = match fs::canonicalize(PathBuf::from("tests")) {
+        Ok(path) => path,
+        Err(err) => panic!("Failed to get test path: {}", err),
+    };
+    
+    env::set_var(
+        "HYDRA_PROVIDERS",
+        //"git@github.com:Annrtl/hydra_registry.git",
+        format!("{}/test_provider", tests_path.display()),
     );
     Ok(())
 }
@@ -56,7 +71,7 @@ fn test_no_command() {
 #[serial]
 fn test_show() {
     // Setup env
-    let _ = set_provider();
+    let _ = set_git_provider();
     let _ = set_cache_path();
 
     // Get test path
@@ -87,9 +102,50 @@ fn test_show() {
 
 #[test]
 #[serial]
-fn test_list() {
+fn test_list_local() {
     // Setup env
-    let _ = set_provider();
+    let _ = set_local_provider();
+    let _ = set_cache_path();
+
+    // Get test path
+    let tests_path = match fs::canonicalize(PathBuf::from("tests")) {
+        Ok(path) => path,
+        Err(err) => panic!("Failed to get test path: {}", err),
+    };
+
+    // Lancer le binaire
+    Command::new(env!("CARGO_BIN_EXE_hydra"))
+        .current_dir(&tests_path)
+        .args(&["fetch"])
+        .output()
+        .expect("Failed to execute binary");
+
+    // Lancer le binaire
+    let output = Command::new(env!("CARGO_BIN_EXE_hydra"))
+        .current_dir(&tests_path)
+        .args(&["list"])
+        .output()
+        .expect("Failed to execute binary");
+
+    // Vérifier que l'exécution est réussie
+    assert!(output.status.success());
+
+    // Vérifier le contenu de la sortie standard
+    let stdout = match String::from_utf8(output.stdout) {
+        Ok(data) => data,
+        Err(err) => panic!("Failed to get stdout: {}", err),
+    };
+    println!("{}", stdout);
+    assert!(stdout.contains("hydra"));
+    assert!(stdout.contains("wb_streamer"));
+
+}
+
+#[test]
+#[serial]
+fn test_list_git() {
+    // Setup env
+    let _ = set_git_provider();
     let _ = set_cache_path();
 
     // Get test path
@@ -130,7 +186,7 @@ fn test_list() {
 #[serial]
 fn test_fetch() {
     // Setup env
-    let _ = set_provider();
+    let _ = set_git_provider();
     let _ = set_cache_path();
     let tests_path = match get_tests_path() {
         Ok(path) => path,
@@ -192,7 +248,7 @@ fn test_fetch() {
 #[serial]
 fn test_check() {
     // Setup env
-    let _ = set_provider();
+    let _ = set_git_provider();
     let _ = set_cache_path();
 
     // Get test path
@@ -217,7 +273,7 @@ fn test_check() {
 #[serial]
 fn test_update() {
     // Setup env
-    let _ = set_provider();
+    let _ = set_git_provider();
     let _ = set_cache_path();
     let tests_path = match get_tests_path() {
         Ok(path) => path,
@@ -244,7 +300,7 @@ fn test_update() {
 #[serial]
 fn test_install() {
     // Setup env
-    let _ = set_provider();
+    let _ = set_git_provider();
     let _ = set_cache_path();
     let tests_path = match get_tests_path() {
         Ok(path) => path,
