@@ -76,3 +76,33 @@ pub fn update_providers_cache() -> Result<(), String> {
     }
     Ok(())
 }
+
+pub fn get_providers_modules_path() -> Result<Vec<PathBuf>, String> {
+    let providers = match get_providers() {
+        Ok(data) => data,
+        Err(err) => return Err(err),
+    };
+
+    let mut providers_modules_path = Vec::new();
+
+    for provider in providers {
+        if provider.starts_with("/") {
+            providers_modules_path.push(PathBuf::from(provider));
+            continue;
+        }
+        
+        let provider_name = match provider.split("/").last() {
+            Some(data) => data,
+            None => return Err("Failed to get project name".to_string()),
+        };
+
+        let provider_cache_path = match get_providers_cache_path() {
+            Ok(data) => data.join(provider_name),
+            Err(err) => return Err(err),
+        };
+
+        providers_modules_path.push(provider_cache_path);
+    }
+
+    Ok(providers_modules_path)
+}

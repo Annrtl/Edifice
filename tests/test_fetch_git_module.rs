@@ -7,7 +7,7 @@ use serial_test::serial;
 
 #[test]
 #[serial]
-fn test_fetch() {
+fn test_fetch_git_module() {
     // Setup env
     let _ = set_git_provider();
     let _ = set_cache_path();

@@ -16,6 +16,7 @@ pub fn set_git_provider() -> Result<(), String> {
     Ok(())
 }
 
+#[allow(dead_code)]
 pub fn set_cache_path() -> Result<(), std::io::Error> {
     let test_path = get_tests_path()?;
     let cache_path = test_path.join("cache");

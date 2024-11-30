@@ -7,7 +7,7 @@ use serial_test::serial;
 
 #[test]
 #[serial]
-fn test_list_git() {
+fn test_list_git_provider() {
     // Setup env
     let _ = set_git_provider();
     let _ = set_cache_path();
@@ -43,5 +43,6 @@ fn test_list_git() {
     println!("{}", stdout);
     assert!(stdout.contains("hydra"));
     assert!(stdout.contains("wb_streamer"));
+    assert!(!stdout.contains("local"));
 
 }

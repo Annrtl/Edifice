@@ -7,7 +7,7 @@ use serial_test::serial;
 
 #[test]
 #[serial]
-fn test_install() {
+fn test_install_git_modules() {
     // Setup env
     let _ = set_git_provider();
     let _ = set_cache_path();
