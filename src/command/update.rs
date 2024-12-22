@@ -1,32 +1,44 @@
-use crate::module::parser::get_module_files;
-use crate::module::LockPackage;
 use crate::module::lock::lock;
-use crate::provider::get_providers_cache_path;
+use crate::module::parser::get_module_files;
+use crate::module::{LockPackage, ModuleFile};
+use crate::provider::get_providers_sync_paths;
 
 use super::check::check;
 
 /// Build the graph from scratch and lock the module
 pub fn update() -> Result<(), String> {
+    println!("Running Update");
+
     let modules = match check() {
         Ok(data) => data,
         Err(err) => return Err(err),
     };
 
+    println!("Modules: {:?}", modules);
+
     let mut packages: Vec<LockPackage> = Vec::new();
 
-    let providers_cache_path = match get_providers_cache_path() {
+    let providers_sync_paths = match get_providers_sync_paths() {
         Ok(data) => data,
         Err(err) => return Err(err),
     };
 
-    let provided_modules = match get_module_files(Some(providers_cache_path)) {
-        Ok(data) => data,
-        Err(err) => return Err(err),
-    };
+    let mut provided_modules: Vec<ModuleFile> = Vec::new();
+
+    for provider_sync_path in providers_sync_paths {
+        let modules_files = match get_module_files(Some(provider_sync_path)) {
+            Ok(data) => data,
+            Err(err) => return Err(err),
+        };
+
+        for module_file in modules_files {
+            provided_modules.push(module_file);
+        }
+    }
 
     for module in provided_modules {
         println!("{}:{}", module.module.name, module.module.version);
-        if ! modules.contains(&(module.module.name.clone(), module.module.version.clone())) {
+        if !modules.contains(&(module.module.name.clone(), module.module.version.clone())) {
             println!("Skipped");
             continue;
         }

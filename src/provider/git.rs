@@ -11,7 +11,7 @@ fn get_builder() -> RepoBuilder<'static> {
 
     // Prepare callbacks.
     let mut callbacks = RemoteCallbacks::new();
-    
+
     callbacks.credentials(move |_url, username_from_url, _allowed_types| {
         Cred::ssh_key(
             match username_from_url {
@@ -35,12 +35,16 @@ fn get_builder() -> RepoBuilder<'static> {
     builder
 }
 
-pub fn download_repository(uri: String, path: PathBuf, branch: Option<String>) -> Result<(), String> {
+pub fn download_repository(
+    uri: String,
+    path: PathBuf,
+    branch: Option<String>,
+) -> Result<(), String> {
     // Get builder
     let mut builder = get_builder();
 
     // Check if the path exists.
-    if ! path.exists() {
+    if !path.exists() {
         // Clone the project.
         let provider_cache_path_str = match path.to_str() {
             Some(data) => data,
@@ -66,8 +70,11 @@ pub fn download_repository(uri: String, path: PathBuf, branch: Option<String>) -
     Ok(())
 }
 
-pub fn clone_and_checkout(uri: &str, path: PathBuf, commit_hash: Option<String>) -> Result<(), String> {
-    
+pub fn clone_and_checkout(
+    uri: &str,
+    path: PathBuf,
+    commit_hash: Option<String>,
+) -> Result<(), String> {
     // Get builder
     let mut builder = get_builder();
 
@@ -104,13 +111,13 @@ pub fn clone_and_checkout(uri: &str, path: PathBuf, commit_hash: Option<String>)
             };
 
             // Effectuer le checkout sur le commit spécifié
-            match repo.checkout_tree(&object, None){
+            match repo.checkout_tree(&object, None) {
                 Ok(_) => (),
                 Err(err) => {
                     return Err(format!("Failed to checkout tree: {err}"));
                 }
             };
-            match repo.set_head_detached(oid){
+            match repo.set_head_detached(oid) {
                 Ok(_) => (),
                 Err(err) => {
                     return Err(format!("Failed to set head detached: {err}"));
@@ -118,10 +125,10 @@ pub fn clone_and_checkout(uri: &str, path: PathBuf, commit_hash: Option<String>)
             };
 
             println!("Repository cloned and checked out to commit {}", hash);
-        },
+        }
         None => {
             println!("Repository cloned");
-        },
+        }
     }
 
     Ok(())

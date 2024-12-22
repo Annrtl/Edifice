@@ -1,6 +1,0 @@
-[module]
-name = "hydra"
-version = "0.1.0"
-
-[dependencies]
-wb_streamer = "1.1.0"

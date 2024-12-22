@@ -27,46 +27,46 @@ struct Args {
     command: Option<Commands>,
 }
 
-fn main() {
+fn main() -> Result<(), String> {
     let args = Args::parse();
 
     match args.command {
         Some(Commands::Check {}) => {
             match check::check() {
-                Ok(_) => println!("Done"),
-                Err(err) => println!("Command failed: {err}"),
+                Ok(_) => return Ok(()),
+                Err(err) => return Err(err),
             };
         }
         Some(Commands::Fetch {}) => {
             match fetch::fetch() {
-                Ok(_) => println!("Done"),
-                Err(err) => println!("Command failed: {err}"),
+                Ok(_) => return Ok(()),
+                Err(err) => return Err(err),
             };
         }
         Some(Commands::Install {}) => {
             match install::install() {
-                Ok(_) => println!("Done"),
-                Err(err) => println!("Command failed: {err}"),
+                Ok(_) => return Ok(()),
+                Err(err) => return Err(err),
             };
         }
         Some(Commands::List {}) => {
             match list::list() {
-                Ok(_) => println!("Done"),
-                Err(err) => println!("Command failed: {err}"),
+                Ok(_) => return Ok(()),
+                Err(err) => return Err(err),
             };
         }
         Some(Commands::Show {}) => {
             match show::show() {
-                Ok(_) => println!("Done"),
-                Err(err) => println!("Command failed: {err}"),
+                Ok(_) => return Ok(()),
+                Err(err) => return Err(err),
             };
         }
         Some(Commands::Update {}) => {
             match update::update() {
-                Ok(_) => println!("Done"),
-                Err(err) => println!("Command failed: {err}"),
+                Ok(_) => return Ok(()),
+                Err(err) => return Err(err),
             };
         }
-        None => println!("No command provided"),
+        None => return Err("No command provided".to_string()),
     }
 }

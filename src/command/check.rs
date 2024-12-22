@@ -2,9 +2,8 @@ use semver::Version;
 
 use crate::module::dfs::Graph;
 use crate::module::parser::get_module_file;
-use crate::module::parser::get_module_files;
 use crate::module::ModuleFile;
-use crate::provider::get_providers_cache_path;
+use crate::provider::get_providers_modules;
 use crate::provider::update_providers_cache;
 
 /// Check the satisfiability of the module
@@ -14,12 +13,7 @@ pub fn check() -> Result<Vec<(String, Version)>, String> {
         Err(err) => eprintln!("Failed to update providers cache: {}", err),
     }
 
-    let providers_cache_path = match get_providers_cache_path() {
-        Ok(data) => data,
-        Err(err) => return Err(err),
-    };
-
-    let providers_module_files = match get_module_files(Some(providers_cache_path)) {
+    let providers_module_files = match get_providers_modules() {
         Ok(data) => data,
         Err(err) => return Err(err),
     };

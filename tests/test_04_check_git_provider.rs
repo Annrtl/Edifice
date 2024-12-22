@@ -1,13 +1,13 @@
 use std::{env, fs, path::PathBuf, process::Command};
 
 mod common;
-use common::{set_git_provider, set_cache_path};
+use common::{set_cache_path, set_git_provider};
 
 use serial_test::serial;
 
 #[test]
 #[serial]
-fn test_check() {
+fn test_check_git_provider() {
     // Setup env
     let _ = set_git_provider();
     let _ = set_cache_path();
@@ -27,5 +27,4 @@ fn test_check() {
 
     // Vérifier que l'exécution est réussie
     assert!(output.status.success());
-
 }
