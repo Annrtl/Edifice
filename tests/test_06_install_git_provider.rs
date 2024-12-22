@@ -1,14 +1,19 @@
 mod common;
 use common::{
-    clean_test_space, get_modules_path, get_tests_path, run_command, set_cache_path,
-    set_git_provider,
+    clean_test_space, get_modules_path, get_test_path, run_command, set_cache_path,
+    set_git_provider, set_test_name,
 };
 
+use function_name::named;
 use serial_test::serial;
 
 #[test]
 #[serial]
+#[named]
 fn test_install_git_provider() {
+    // Set CARGO_TEST_NAME
+    set_test_name(function_name!());
+
     // Setup environment
     match set_git_provider() {
         Ok(_) => (),
@@ -30,7 +35,7 @@ fn test_install_git_provider() {
     assert!(output.status.success());
 
     // Check module.lock exists
-    let lockfile = match get_tests_path() {
+    let lockfile = match get_test_path() {
         Ok(path) => path.join("module.lock"),
         Err(err) => panic!("Failed to get tests path: {}", err),
     };

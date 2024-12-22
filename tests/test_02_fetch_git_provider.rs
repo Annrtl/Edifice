@@ -1,14 +1,19 @@
 mod common;
 use common::{
     clean_test_space, get_cache_path, get_provider_hash, run_command, set_cache_path,
-    set_git_provider,
+    set_git_provider, set_test_name,
 };
 
+use function_name::named;
 use serial_test::serial;
 
 #[test]
 #[serial]
+#[named]
 fn test_fetch_git_provider() {
+    // Set CARGO_TEST_NAME
+    set_test_name(function_name!());
+
     // Setup environment
     match set_git_provider() {
         Ok(_) => (),

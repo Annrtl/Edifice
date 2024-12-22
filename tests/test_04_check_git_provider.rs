@@ -1,30 +1,33 @@
-use std::{env, fs, path::PathBuf, process::Command};
-
 mod common;
-use common::{set_cache_path, set_git_provider};
+use common::{clean_test_space, run_command, set_cache_path, set_git_provider, set_test_name};
 
+use function_name::named;
 use serial_test::serial;
 
 #[test]
 #[serial]
+#[named]
 fn test_check_git_provider() {
-    // Setup env
-    let _ = set_git_provider();
-    let _ = set_cache_path();
+    // Set CARGO_TEST_NAME
+    set_test_name(function_name!());
 
-    // Get test path
-    let tests_path = match fs::canonicalize(PathBuf::from("tests")) {
-        Ok(path) => path,
-        Err(err) => panic!("Failed to get test path: {}", err),
+    // Setup environment
+    match set_git_provider() {
+        Ok(_) => (),
+        Err(err) => panic!("Failed to set local provider: {}", err),
     };
 
-    // Lancer le binaire
-    let output = Command::new(env!("CARGO_BIN_EXE_hydra"))
-        .current_dir(&tests_path)
-        .args(&["check"])
-        .output()
-        .expect("Failed to execute binary");
+    match set_cache_path() {
+        Ok(_) => (),
+        Err(err) => panic!("Failed to set cache path: {}", err),
+    };
+
+    match clean_test_space() {
+        Ok(_) => (),
+        Err(err) => panic!("Failed to clean test space: {}", err),
+    };
 
     // Vérifier que l'exécution est réussie
+    let output = run_command(&vec!["check"], None);
     assert!(output.status.success());
 }

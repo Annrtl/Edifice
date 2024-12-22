@@ -1,11 +1,18 @@
 mod common;
-use common::{clean_test_space, get_tests_path, run_command, set_cache_path, set_local_provider};
+use common::{
+    clean_test_space, get_test_path, run_command, set_cache_path, set_local_provider, set_test_name,
+};
 
+use function_name::named;
 use serial_test::serial;
 
 #[test]
 #[serial]
+#[named]
 fn test_update_local_provider() {
+    // Set CARGO_TEST_NAME
+    set_test_name(function_name!());
+
     // Setup environment
     match set_local_provider() {
         Ok(_) => (),
@@ -28,12 +35,12 @@ fn test_update_local_provider() {
     assert!(output.status.success());
 
     // Check lockfile exists
-    let tests_path = match get_tests_path() {
+    let test_path = match get_test_path() {
         Ok(path) => path,
         Err(err) => panic!("Failed to get test path: {}", err),
     };
 
-    let lockfile_path = tests_path.join("module.lock");
+    let lockfile_path = test_path.join("module.lock");
 
     assert!(std::path::Path::new(&lockfile_path).exists());
 }

@@ -5,14 +5,35 @@ use std::{
     path::PathBuf,
 };
 
+pub fn set_test_name(test_name: &str) {
+    env::set_var("CARGO_TEST_NAME", test_name);
+}
+
 pub fn get_tests_path() -> Result<PathBuf, std::io::Error> {
     // Get test path
     fs::canonicalize(PathBuf::from("tests"))
 }
 
+pub fn get_test_path() -> Result<PathBuf, std::io::Error> {
+    // Get test path
+    let tests_path = get_tests_path()?;
+    // Get current test name
+    let test_name = match env::var("CARGO_TEST_NAME") {
+        Ok(name) => name,
+        Err(err) => panic!("Failed to get test name: {}", err),
+    };
+    // Get test path
+    let test_path = tests_path.join(test_name);
+    // Check if test path exists
+    if !test_path.exists() {
+        fs::create_dir(&test_path)?;
+    }
+    Ok(test_path)
+}
+
 pub fn create_module(content: String) -> Result<(), String> {
     // Get test path
-    let tests_path = match get_tests_path() {
+    let tests_path = match get_test_path() {
         Ok(path) => path,
         Err(err) => return Err(format!("Failed to get test path: {}", err)),
     };
@@ -86,7 +107,7 @@ pub fn get_provider_hash() -> u32 {
 
 #[allow(dead_code)]
 pub fn set_cache_path() -> Result<(), std::io::Error> {
-    let test_path = get_tests_path()?;
+    let test_path = get_test_path()?;
     let cache_path = test_path.join("cache");
     env::set_var("HYDRA_CACHE", cache_path.clone());
     Ok(())
@@ -105,7 +126,7 @@ pub fn get_cache_path() -> Result<PathBuf, std::io::Error> {
 
 #[allow(dead_code)]
 pub fn get_modules_path() -> Result<PathBuf, std::io::Error> {
-    let test_path = get_tests_path()?;
+    let test_path = get_test_path()?;
     let modules_path = test_path.join("modules");
     Ok(modules_path)
 }
@@ -161,7 +182,7 @@ pub fn run_command(args: &[&str], exp_fail: Option<bool>) -> std::process::Outpu
     };
 
     // Get test path
-    let tests_path = match get_tests_path() {
+    let tests_path = match get_test_path() {
         Ok(path) => path,
         Err(err) => panic!("Failed to get test path: {}", err),
     };

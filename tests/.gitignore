@@ -1,3 +1,4 @@
 cache/
 modules/
+test_*/
 module.lock
