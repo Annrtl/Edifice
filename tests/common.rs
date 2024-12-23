@@ -2,28 +2,47 @@ use std::{
     env,
     fs::{self, File},
     io::Write,
-    path::PathBuf,
+    path::PathBuf, sync::Mutex,
 };
 
-pub fn set_test_name(test_name: &str) {
-    env::set_var("CARGO_TEST_NAME", test_name);
+struct Context {
+    test_name: String,
+    tests_path: PathBuf,
+    test_path: PathBuf,
+}
+
+impl Context {
+    pub fn new(test_name: &str) -> Self {
+        let tests_path = match fs::canonicalize(PathBuf::from("tests")) {
+            Ok(path) => path,
+            Err(err) => panic!("Failed to get tests path: {}", err),
+        };
+        let test_path = tests_path.join(test_name);
+        Context {
+            test_name: test_name.to_string(),
+            tests_path: tests_path,
+            test_path: test_path,
+        }
+    }
+}
+
+// Utiliser un Mutex pour garantir un accès thread-safe
+static CONTEXT: Mutex<Option<Context>> = Mutex::new(None);
+
+pub fn init_context(test_name: &str) {
+    let mut ctx = CONTEXT.lock().unwrap();
+    *ctx = Some(Context::new(test_name));
 }
 
 pub fn get_tests_path() -> Result<PathBuf, std::io::Error> {
     // Get test path
-    fs::canonicalize(PathBuf::from("tests"))
+    let tests_path = CONTEXT.lock().unwrap().as_ref().unwrap().tests_path.clone();
+    Ok(tests_path)
 }
 
 pub fn get_test_path() -> Result<PathBuf, std::io::Error> {
     // Get test path
-    let tests_path = get_tests_path()?;
-    // Get current test name
-    let test_name = match env::var("CARGO_TEST_NAME") {
-        Ok(name) => name,
-        Err(err) => panic!("Failed to get test name: {}", err),
-    };
-    // Get test path
-    let test_path = tests_path.join(test_name);
+    let test_path = CONTEXT.lock().unwrap().as_ref().unwrap().test_path.clone();
     // Check if test path exists
     if !test_path.exists() {
         fs::create_dir(&test_path)?;
@@ -134,9 +153,9 @@ pub fn get_modules_path() -> Result<PathBuf, std::io::Error> {
 #[allow(dead_code)]
 pub fn set_local_provider() -> Result<(), String> {
     // Get test path
-    let tests_path = match fs::canonicalize(PathBuf::from("tests")) {
+    let tests_path = match get_tests_path() {
         Ok(path) => path,
-        Err(err) => panic!("Failed to get test path: {}", err),
+        Err(err) => return Err(format!("Failed to get test path: {}", err)),
     };
 
     env::set_var(
@@ -151,24 +170,47 @@ pub fn set_local_provider() -> Result<(), String> {
     Ok(())
 }
 
+pub fn set_both_providers() -> Result<(), String> {
+    let tests_path = match get_tests_path() {
+        Ok(path) => path,
+        Err(err) => return Err(format!("Failed to get test path: {}", err)),
+    };
+    
+    let providers : Vec<String> = vec![
+        format!("{}/local_provider", tests_path.display()),
+        "git@github.com:Annrtl/fusesoc-cores.git".to_string(),
+    ];
+
+    let providers = providers.join(";");
+
+    env::set_var(
+        "HYDRA_PROVIDERS",
+        &providers,
+    );
+
+    // Create module that use module only remote modules
+    create_generic_module()?;
+    Ok(())
+}
+
 #[allow(dead_code)]
 pub fn clean_test_space() -> Result<(), String> {
     // Get test path
-    let tests_path = match fs::canonicalize(PathBuf::from("tests")) {
+    let test_path = match get_test_path() {
         Ok(path) => path,
         Err(err) => return Err(format!("Failed to get test path: {}", err)),
     };
 
     // Clean cache
-    let cache_path = tests_path.join("cache");
+    let cache_path = test_path.join("cache");
     let _ = fs::remove_dir_all(&cache_path);
 
     // Clean modules
-    let modules_path = tests_path.join("modules");
+    let modules_path = test_path.join("modules");
     let _ = fs::remove_dir_all(&modules_path);
 
     //Clean module.lock
-    let module_lock_path = tests_path.join("module.lock");
+    let module_lock_path = test_path.join("module.lock");
     let _ = fs::remove_file(&module_lock_path);
 
     Ok(())

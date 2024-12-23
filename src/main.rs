@@ -1,5 +1,6 @@
 use clap::{Parser, Subcommand};
 
+use hydra::command::add;
 use hydra::command::check;
 use hydra::command::fetch;
 use hydra::command::install;
@@ -10,6 +11,9 @@ use hydra::command::update;
 #[derive(Subcommand)]
 enum Commands {
     /// does testing things
+    Add {
+        module: Option<String>,
+    },
     Check {},
     Fetch {},
     Install {},
@@ -31,6 +35,15 @@ fn main() -> Result<(), String> {
     let args = Args::parse();
 
     match args.command {
+        Some(Commands::Add { module }) => {
+            match module {
+                Some(module) => match add::add(module) {
+                    Ok(_) => return Ok(()),
+                    Err(err) => return Err(err),
+                },
+                None => return Err("No module provided".to_string()),
+            };
+        }
         Some(Commands::Check {}) => {
             match check::check() {
                 Ok(_) => return Ok(()),

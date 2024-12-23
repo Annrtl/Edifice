@@ -1,7 +1,7 @@
 mod common;
 use common::{
     clean_test_space, get_modules_path, get_test_path, run_command, set_cache_path,
-    set_local_provider, set_test_name,
+    set_local_provider, init_context,
 };
 
 use function_name::named;
@@ -11,8 +11,7 @@ use serial_test::serial;
 #[serial]
 #[named]
 fn test_install_local_provider() {
-    // Set CARGO_TEST_NAME
-    set_test_name(function_name!());
+    init_context(function_name!());
 
     // Setup environment
     match set_local_provider() {
