@@ -7,7 +7,7 @@ use crate::module::parser::get_module_file;
 use super::check::check;
 
 /// Add a module to the project
-pub fn add(module: String) -> Result<(), String> {
+pub fn add(module: String, dry_run: bool) -> Result<(), String> {
     let mut module_file = match get_module_file(None) {
         Ok(data) => data,
         Err(err) => return Err(err),
@@ -15,7 +15,7 @@ pub fn add(module: String) -> Result<(), String> {
 
     // Get subsection of the module
     let module_sections = module.split("@").collect::<Vec<&str>>();
-    
+
     // Get the module name
     let module_name = module_sections[0];
 
@@ -46,17 +46,32 @@ pub fn add(module: String) -> Result<(), String> {
         Err(err) => return Err(format!("Error writing module file: {:?}", err)),
     }
 
+    // Use the check command to resolve the module
     let resolved_modules = match check() {
         Ok(res) => res,
         Err(err) => return Err(err),
     };
 
-    let module_version = match resolved_modules.iter().find(|(name, _)| name == module_name) {
+    // Get the resolved version of the module
+    let module_version = match resolved_modules
+        .iter()
+        .find(|(name, _)| name == module_name)
+    {
         Some((_, version)) => version,
         None => return Err("Module not resolved".to_string()),
     };
 
-    let module_version_req = match VersionReq::parse(&module_version.to_string()){
+    // If dry run is enabled, display the resolved version
+    if dry_run {
+        println!(
+            "Resolved version of module {}: {}",
+            module_name, module_version
+        );
+        return Ok(());
+    }
+
+    // Update the module file with the resolved version
+    let module_version_req = match VersionReq::parse(&module_version.to_string()) {
         Ok(data) => data,
         Err(err) => return Err(format!("Error parsing version: {:?}", err)),
     };

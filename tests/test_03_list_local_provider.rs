@@ -1,5 +1,5 @@
 mod common;
-use common::{clean_test_space, run_command, set_cache_path, set_local_provider, init_context};
+use common::{clean_test_space, init_context, run_command, set_cache_path, set_local_provider};
 
 use function_name::named;
 use serial_test::serial;
@@ -11,6 +11,11 @@ fn test_list_local_provider() {
     init_context(function_name!());
 
     // Setup environment
+    match clean_test_space() {
+        Ok(_) => (),
+        Err(err) => panic!("Failed to clean test space: {}", err),
+    };
+
     match set_local_provider() {
         Ok(_) => (),
         Err(err) => panic!("Failed to set local provider: {}", err),
@@ -19,11 +24,6 @@ fn test_list_local_provider() {
     match set_cache_path() {
         Ok(_) => (),
         Err(err) => panic!("Failed to set cache path: {}", err),
-    };
-
-    match clean_test_space() {
-        Ok(_) => (),
-        Err(err) => panic!("Failed to clean test space: {}", err),
     };
 
     // Run the test

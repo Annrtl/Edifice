@@ -1,6 +1,6 @@
 mod common;
 use common::{
-    clean_test_space, get_test_path, run_command, set_cache_path, set_git_provider, init_context,
+    clean_test_space, get_test_path, init_context, run_command, set_cache_path, set_git_provider,
 };
 
 use function_name::named;
@@ -13,19 +13,19 @@ fn test_update_git_provider() {
     init_context(function_name!());
 
     // Setup environment
+    match clean_test_space() {
+        Ok(_) => (),
+        Err(err) => panic!("Failed to clean test space: {}", err),
+    };
+
     match set_git_provider() {
         Ok(_) => (),
-        Err(err) => panic!("Failed to set local provider: {}", err),
+        Err(err) => panic!("Failed to set git provider: {}", err),
     };
 
     match set_cache_path() {
         Ok(_) => (),
         Err(err) => panic!("Failed to set cache path: {}", err),
-    };
-
-    match clean_test_space() {
-        Ok(_) => (),
-        Err(err) => panic!("Failed to clean test space: {}", err),
     };
 
     // Vérifier que l'exécution est réussie

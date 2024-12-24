@@ -1,6 +1,6 @@
 mod common;
 use common::{
-    clean_test_space, get_test_path, run_command, set_both_providers, set_cache_path, init_context
+    clean_test_space, get_test_path, init_context, run_command, set_both_providers, set_cache_path,
 };
 
 use function_name::named;
@@ -13,6 +13,11 @@ fn test_add_module() {
     init_context(function_name!());
 
     // Setup environment
+    match clean_test_space() {
+        Ok(_) => (),
+        Err(err) => panic!("Failed to clean test space: {}", err),
+    };
+
     match set_both_providers() {
         Ok(_) => (),
         Err(err) => panic!("Failed to set local provider: {}", err),
@@ -23,14 +28,21 @@ fn test_add_module() {
         Err(err) => panic!("Failed to set cache path: {}", err),
     };
 
-    match clean_test_space() {
-        Ok(_) => (),
-        Err(err) => panic!("Failed to clean test space: {}", err),
-    };
-
     // Run the test
     let output = run_command(&vec!["add"], Some(true));
     assert!(!output.status.success());
+
+    // Run the test
+    let output = run_command(&vec!["add", "local", "--dry"], None);
+    assert!(output.status.success());
+
+    // Vérifier le contenu de la sortie standard
+    let stdout = match String::from_utf8(output.stdout) {
+        Ok(data) => data,
+        Err(err) => panic!("Failed to get stdout: {}", err),
+    };
+
+    assert!(stdout.contains("Resolved version of module local: 1.0.0"));
 
     // Run the test
     let output = run_command(&vec!["add", "local"], None);
@@ -48,5 +60,4 @@ fn test_add_module() {
     };
 
     assert!(module_file_content.contains("local = \"^1.0.0\""));
-
 }

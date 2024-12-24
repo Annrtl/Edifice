@@ -1,8 +1,9 @@
 use std::{
     env,
-    fs::{self, File},
+    fs::{self, File, OpenOptions},
     io::Write,
-    path::PathBuf, sync::Mutex,
+    path::PathBuf,
+    sync::Mutex,
 };
 
 struct Context {
@@ -175,18 +176,15 @@ pub fn set_both_providers() -> Result<(), String> {
         Ok(path) => path,
         Err(err) => return Err(format!("Failed to get test path: {}", err)),
     };
-    
-    let providers : Vec<String> = vec![
+
+    let providers: Vec<String> = vec![
         format!("{}/local_provider", tests_path.display()),
         "git@github.com:Annrtl/fusesoc-cores.git".to_string(),
     ];
 
     let providers = providers.join(";");
 
-    env::set_var(
-        "HYDRA_PROVIDERS",
-        &providers,
-    );
+    env::set_var("HYDRA_PROVIDERS", &providers);
 
     // Create module that use module only remote modules
     create_generic_module()?;
@@ -201,17 +199,7 @@ pub fn clean_test_space() -> Result<(), String> {
         Err(err) => return Err(format!("Failed to get test path: {}", err)),
     };
 
-    // Clean cache
-    let cache_path = test_path.join("cache");
-    let _ = fs::remove_dir_all(&cache_path);
-
-    // Clean modules
-    let modules_path = test_path.join("modules");
-    let _ = fs::remove_dir_all(&modules_path);
-
-    //Clean module.lock
-    let module_lock_path = test_path.join("module.lock");
-    let _ = fs::remove_file(&module_lock_path);
+    let _ = fs::remove_dir_all(&test_path);
 
     Ok(())
 }
@@ -224,14 +212,14 @@ pub fn run_command(args: &[&str], exp_fail: Option<bool>) -> std::process::Outpu
     };
 
     // Get test path
-    let tests_path = match get_test_path() {
+    let test_path = match get_test_path() {
         Ok(path) => path,
         Err(err) => panic!("Failed to get test path: {}", err),
     };
 
     // Run the command
     let output = std::process::Command::new(env!("CARGO_BIN_EXE_hydra"))
-        .current_dir(&tests_path)
+        .current_dir(&test_path)
         .args(args)
         .output()
         .expect("Failed to execute binary");
@@ -242,8 +230,20 @@ pub fn run_command(args: &[&str], exp_fail: Option<bool>) -> std::process::Outpu
         Err(err) => panic!("Failed to get stdout: {}", err),
     };
 
-    let mut log_file = File::create(tests_path.join("hydra.stdout")).unwrap();
-    log_file.write_all(&stdout.as_bytes()).unwrap();
+    // Write stdout
+    let stdout_file_path = test_path.join("hydra.stdout");
+    let mut stdout_file = OpenOptions::new()
+        .append(true)
+        .create(true)
+        .open(stdout_file_path)
+        .expect("Failed to open stdout file");
+
+    stdout_file
+        .write("\n---\n---\n---\n\n".as_bytes())
+        .expect("Failed to write to stdout file");
+    stdout_file
+        .write(&stdout.as_bytes())
+        .expect("Failed to write to stdout file");
 
     // write stderr to hydra.stderr
     let stderr = match String::from_utf8(output.clone().stderr) {
@@ -251,8 +251,19 @@ pub fn run_command(args: &[&str], exp_fail: Option<bool>) -> std::process::Outpu
         Err(err) => panic!("Failed to get stderr: {}", err),
     };
 
-    let mut log_file = File::create(tests_path.join("hydra.stderr")).unwrap();
-    log_file.write_all(&stderr.as_bytes()).unwrap();
+    // Write stderr
+    let stderr_file_path = test_path.join("hydra.stderr");
+    let mut stderr_file = OpenOptions::new()
+        .append(true)
+        .create(true)
+        .open(stderr_file_path)
+        .expect("Failed to open stderr file");
+    stderr_file
+        .write("\n---\n---\n---\n\n".as_bytes())
+        .expect("Failed to write to stdout file");
+    stderr_file
+        .write(&stderr.as_bytes())
+        .expect("Failed to write to stderr file");
 
     // Assert the command was successful
     assert!(output.status.success() == !exp_fail);

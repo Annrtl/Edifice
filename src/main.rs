@@ -13,6 +13,8 @@ enum Commands {
     /// does testing things
     Add {
         module: Option<String>,
+        #[arg(short, long)]
+        dry: bool,
     },
     Check {},
     Fetch {},
@@ -35,13 +37,14 @@ fn main() -> Result<(), String> {
     let args = Args::parse();
 
     match args.command {
-        Some(Commands::Add { module }) => {
-            match module {
-                Some(module) => match add::add(module) {
-                    Ok(_) => return Ok(()),
-                    Err(err) => return Err(err),
-                },
+        Some(Commands::Add { module, dry }) => {
+            let _module = match module {
+                Some(module) => module,
                 None => return Err("No module provided".to_string()),
+            };
+            match add::add(_module, dry) {
+                Ok(_) => return Ok(()),
+                Err(err) => return Err(err),
             };
         }
         Some(Commands::Check {}) => {

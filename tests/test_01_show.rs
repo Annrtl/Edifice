@@ -11,6 +11,11 @@ fn test_show() {
     init_context(function_name!());
 
     // Setup environment
+    match clean_test_space() {
+        Ok(_) => (),
+        Err(err) => panic!("Failed to clean test space: {}", err),
+    };
+
     match set_local_provider() {
         Ok(_) => (),
         Err(err) => panic!("Failed to set local provider: {}", err),
@@ -19,11 +24,6 @@ fn test_show() {
     match set_cache_path() {
         Ok(_) => (),
         Err(err) => panic!("Failed to set cache path: {}", err),
-    };
-
-    match clean_test_space() {
-        Ok(_) => (),
-        Err(err) => panic!("Failed to clean test space: {}", err),
     };
 
     // Vérifier que l'exécution est réussie
