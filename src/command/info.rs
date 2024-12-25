@@ -2,14 +2,14 @@ use tabled::{Table, Tabled};
 
 use crate::module::parser::get_module_file;
 
-/// Show the module information
+/// Info the module information
 #[derive(Tabled)]
 struct ModuleDispay {
     name: String,
     version: String,
 }
 
-pub fn show() -> Result<(), String> {
+pub fn info() -> Result<(), String> {
     let module_file = match get_module_file(None) {
         Ok(data) => data,
         Err(err) => return Err(err),

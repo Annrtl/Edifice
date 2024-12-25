@@ -5,7 +5,7 @@ use edifice::command::check;
 use edifice::command::fetch;
 use edifice::command::install;
 use edifice::command::list;
-use edifice::command::show;
+use edifice::command::info;
 use edifice::command::update;
 
 #[derive(Subcommand)]
@@ -20,7 +20,7 @@ enum Commands {
     Fetch {},
     Install {},
     List {},
-    Show {},
+    Info {},
     Update {},
 }
 
@@ -71,8 +71,8 @@ fn main() -> Result<(), String> {
                 Err(err) => return Err(err),
             };
         }
-        Some(Commands::Show {}) => {
-            match show::show() {
+        Some(Commands::Info {}) => {
+            match info::info() {
                 Ok(_) => return Ok(()),
                 Err(err) => return Err(err),
             };

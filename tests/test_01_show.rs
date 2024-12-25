@@ -7,7 +7,7 @@ use serial_test::serial;
 #[test]
 #[serial]
 #[named]
-fn test_show() {
+fn test_info() {
     init_context(function_name!());
 
     // Setup environment
@@ -27,7 +27,7 @@ fn test_show() {
     };
 
     // Vérifier que l'exécution est réussie
-    let output = run_command(&vec!["show"], None);
+    let output = run_command(&vec!["info"], None);
     assert!(output.status.success());
 
     // Vérifier le contenu de la sortie standard
