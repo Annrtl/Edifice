@@ -42,6 +42,18 @@ fn test_add_module() {
         Err(err) => panic!("Failed to get stdout: {}", err),
     };
 
+    assert!(stdout.contains("Resolved version of module local: 1.0.1"));
+
+    // Run the test
+    let output = run_command(&vec!["add", "local@1.0.0", "--dry"], None);
+    assert!(output.status.success());
+
+    // Vérifier le contenu de la sortie standard
+    let stdout = match String::from_utf8(output.stdout) {
+        Ok(data) => data,
+        Err(err) => panic!("Failed to get stdout: {}", err),
+    };
+
     assert!(stdout.contains("Resolved version of module local: 1.0.0"));
     
     // Check module file DO NOT contains the local module
@@ -72,5 +84,5 @@ fn test_add_module() {
         Err(err) => panic!("Error reading module file: {:?}", err),
     };
 
-    assert!(module_file_content.contains("local = \"^1.0.0\""));
+    assert!(module_file_content.contains("local = \"^1.0.1\""));
 }

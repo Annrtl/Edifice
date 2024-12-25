@@ -19,7 +19,7 @@ pub fn add(module: String, dry_run: bool) -> Result<(), String> {
 
     // Check if module has a version
     let module_version = match module_sections.len() > 1 {
-        true => match VersionReq::parse(module_sections[1]) {
+        true => match VersionReq::parse(format!("={}", module_sections[1]).as_str()) {
             Ok(data) => data,
             Err(_) => return Err("Invalid version".to_string()),
         },
