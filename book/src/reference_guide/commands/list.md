@@ -6,7 +6,7 @@ Display the list of available modules and their versions. If no regex pattern is
 
 ## Synopsys
 
-`hydra` `list` [*option*] [*regex pattern*]
+`edifice` `list` [*option*] [*regex pattern*]
 
 ## Options
 
@@ -16,10 +16,10 @@ Display the list of available modules and their versions. If no regex pattern is
 
 ## Examples
 
-`hydra` `list`
+`edifice` `list`
 
-`hydra` `list` '.\*_model'
+`edifice` `list` '.\*_model'
 
-`hydra` `list` --locked
+`edifice` `list` --locked
 
-`hydra` `list` --locked '.\*_model' 
+`edifice` `list` --locked '.\*_model' 

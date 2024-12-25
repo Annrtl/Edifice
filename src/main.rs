@@ -1,12 +1,12 @@
 use clap::{Parser, Subcommand};
 
-use hydra::command::add;
-use hydra::command::check;
-use hydra::command::fetch;
-use hydra::command::install;
-use hydra::command::list;
-use hydra::command::show;
-use hydra::command::update;
+use edifice::command::add;
+use edifice::command::check;
+use edifice::command::fetch;
+use edifice::command::install;
+use edifice::command::list;
+use edifice::command::show;
+use edifice::command::update;
 
 #[derive(Subcommand)]
 enum Commands {

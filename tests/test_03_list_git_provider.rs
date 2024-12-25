@@ -38,7 +38,7 @@ fn test_list_git_provider() {
         Err(err) => panic!("Failed to get stdout: {}", err),
     };
     println!("{}", stdout);
-    assert!(stdout.contains("hydra"));
+    assert!(stdout.contains("edifice"));
     assert!(stdout.contains("wb_streamer"));
     assert!(!stdout.contains("local"));
 }

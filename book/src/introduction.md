@@ -1,6 +1,6 @@
 # Introduction
 
-Hydra is a package manager and build automation tool adapted to the hardware industry. Hydra has ambition to be an language-agnostique and rust-powered package manager and automation tool. Its goal is to bring a scalable solution (1000+ IP management) to the hardware industry. Hydra is born to answer to scalability limations of the open source projects Fusesoc and Edalize.
+Edifice is a package manager and build automation tool adapted to the hardware industry. Edifice has ambition to be an language-agnostique and rust-powered package manager and automation tool. Its goal is to bring a scalable solution (1000+ IP management) to the hardware industry. Edifice is born to answer to scalability limations of the open source projects Fusesoc and Edalize.
 
 ## Contributing
 
@@ -121,7 +121,7 @@ prepend = [
 
 ### Langage agnostique
 ### Remotly cachable artifact
-Hydra containes many tools and features:
+Edifice containes many tools and features:
   - A package manager (like Fusesoc, npm, composert ... etc)
   - A build automation tool (like Edalize, CMake ... etc)
   - Three configurations concept and files:
@@ -131,7 +131,7 @@ Hydra containes many tools and features:
 
 ## Inspirations
 
-The main inspirations of Hydra are:
+The main inspirations of Edifice are:
   - Bazel ([website](https://bazel.build/), [github](https://github.com/bazelbuild/bazel/))
     - Versionned rules
     - Flexibility of the flow

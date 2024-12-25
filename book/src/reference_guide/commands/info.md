@@ -13,7 +13,7 @@ You can specifiy a name and version to get informations of a module in registrie
 
 ## Synopsys
 
-`hydra` `info` [*option*] [*name*[@*version*]]
+`edifice` `info` [*option*] [*name*[@*version*]]
 
 ## Options
 
@@ -21,8 +21,8 @@ You can specifiy a name and version to get informations of a module in registrie
 
 ## Examples
 
-`hydra` `info`
+`edifice` `info`
 
-`hydra` `info` dff
+`edifice` `info` dff
 
-`hydra` `info` dff@0.1.4
+`edifice` `info` dff@0.1.4

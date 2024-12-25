@@ -2,11 +2,11 @@
 
 ## Description
 
-Display the commands and global options of Hydra.
+Display the commands and global options of Edifice.
 
 ## Synopsys
 
-`hydra` `help` [*option*]
+`edifice` `help` [*option*]
 
 ## Options
 
@@ -14,4 +14,4 @@ Display the commands and global options of Hydra.
 
 ## Examples
 
-`hydra` `help`
+`edifice` `help`

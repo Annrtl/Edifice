@@ -8,16 +8,16 @@ Two provider type are available:
 - Git
 
 ```toml
-# $HYDRA_REGISTRY/module/module.toml with git provider
+# $EDIFICE_REGISTRY/module/module.toml with git provider
 [provider]
-uri = "git@github.com:hydra/module.git"
+uri = "git@github.com:edifice/module.git"
 commit = "fad83baa880db7b3ba61b88fdafdde2a666da05f"
 ```
 
 - Local
 
 ```toml
-# $HYDRA_REGISTRY/module/module.toml with local provider
+# $EDIFICE_REGISTRY/module/module.toml with local provider
 [provider]
 uri = "/absolute/path/to/local/module/directory"
 ```
@@ -26,7 +26,7 @@ If `.git` directory doesn't exists in the module directory, local provider is us
 
 ## Synopsys
 
-`hydra` `publish` [*option*]
+`edifice` `publish` [*option*]
 
 ## Options
 
@@ -38,6 +38,6 @@ If `.git` directory doesn't exists in the module directory, local provider is us
 
 ## Examples
 
-`hydra` `publish`
+`edifice` `publish`
 
-`hydra` `publish` --type local
+`edifice` `publish` --type local

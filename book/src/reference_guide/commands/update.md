@@ -2,11 +2,11 @@
 
 ## Description
 
-Implictly run `hydra` `check` to get a satisfiable dependencies tree and write a lockfile `module.lock` which memorize the solution and guarantee the reproductibility of the build.
+Implictly run `edifice` `check` to get a satisfiable dependencies tree and write a lockfile `module.lock` which memorize the solution and guarantee the reproductibility of the build.
 
 ## Synopsys
 
-`hydra` `update` [*option*]
+`edifice` `update` [*option*]
 
 ## Options
 
@@ -14,4 +14,4 @@ Implictly run `hydra` `check` to get a satisfiable dependencies tree and write a
 
 ## Examples
 
-`hydra` `update`
+`edifice` `update`

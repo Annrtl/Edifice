@@ -17,7 +17,7 @@ my_project/
 
 ## Synopsys
 
-`hydra` `new` [*option*] *name*
+`edifice` `new` [*option*] *name*
 
 ## Options
 
@@ -25,4 +25,4 @@ my_project/
 
 ## Examples
 
-`hydra` `new` my_project 
+`edifice` `new` my_project 

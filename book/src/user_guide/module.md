@@ -4,34 +4,34 @@ The file module.toml defines the name, the version and the dependencies of your 
 
 ## Find a depedency
 
-To find the dependency you need you can use the command `hydra` `search` as follow:
+To find the dependency you need you can use the command `edifice` `search` as follow:
 
 ```shell
-hydra search <name>
+edifice search <name>
 ```
 
 or
 
 ```shell
-hydra search <description>
+edifice search <description>
 ```
 
-The full list of the registry modules is available with the command `hydra` `list`
+The full list of the registry modules is available with the command `edifice` `list`
 
 ```shell
-hydra list
+edifice list
 ```
 
 To list locker module only add the option `--locked`
 
 ```shell
-hydra list --locked
+edifice list --locked
 ```
 
 ## Add depedency
 
-To add a dependency from the registry you need to use the command `hydra` `add` as follow:
+To add a dependency from the registry you need to use the command `edifice` `add` as follow:
 
 ```shell
-hydra add <dependency_name>
+edifice add <dependency_name>
 ```

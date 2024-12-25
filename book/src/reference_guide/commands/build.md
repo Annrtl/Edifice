@@ -6,16 +6,16 @@ Generate the build directory with a Makefile to run target. This generation depe
 
 ## Synopsys
 
-`hydra` `build` [*option*]
+`edifice` `build` [*option*]
 
 ## Options
 
-`--build-dir`: Location of the generate build directory. By default the location is the current directory. This option overwrite the environment variable `HYDRA_BUILD_DIR`.
+`--build-dir`: Location of the generate build directory. By default the location is the current directory. This option overwrite the environment variable `EDIFICE_BUILD_DIR`.
 
 `--help`: Display command description and options.
 
 ## Examples
 
-`hydra` `build`
+`edifice` `build`
 
-`hydra` `build` --build-dir /local/hydra
+`edifice` `build` --build-dir /local/edifice

@@ -9,5 +9,5 @@
 Run the following command to install:
 
 ```shell
-cargo install --git https://github.com/Annrtl/Hydra
+cargo install --git https://github.com/Annrtl/Edifice
 ```

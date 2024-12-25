@@ -6,7 +6,7 @@ Clone the dependencies directory in a new directory `modules` located in the mod
 
 ## Synopsys
 
-`hydra` `install`
+`edifice` `install`
 
 ## Options
 
@@ -14,4 +14,4 @@ Clone the dependencies directory in a new directory `modules` located in the mod
 
 ## Examples
 
-`hydra` `install`
+`edifice` `install`

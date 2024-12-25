@@ -36,6 +36,6 @@ fn test_show() {
         Err(err) => panic!("Failed to get stdout: {}", err),
     };
     println!("{}", stdout);
-    assert!(stdout.contains("hydra"));
+    assert!(stdout.contains("edifice"));
     assert!(stdout.contains("0.1.0"));
 }

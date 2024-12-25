@@ -6,7 +6,7 @@ Run targets of the build specified in `target.toml`
 
 ## Synopsys
 
-`hydra` `run` [*option*] [*target name regex*]
+`edifice` `run` [*option*] [*target name regex*]
 
 ## Options
 
@@ -14,8 +14,8 @@ Run targets of the build specified in `target.toml`
 
 ## Examples
 
-`hydra` `run`
+`edifice` `run`
 
-`hydra` `run` '.*-lint'
+`edifice` `run` '.*-lint'
 
-`hydra` `run` 'test_.*'
+`edifice` `run` 'test_.*'

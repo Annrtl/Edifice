@@ -6,7 +6,7 @@ Remove the module build directory
 
 ## Synopsys
 
-`hydra` `clean` [*option*]
+`edifice` `clean` [*option*]
 
 ## Options
 
@@ -14,4 +14,4 @@ Remove the module build directory
 
 ## Examples
 
-`hydra` `clean`
+`edifice` `clean`

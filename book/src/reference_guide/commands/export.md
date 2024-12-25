@@ -2,7 +2,7 @@
 
 ## Description
 
-Create a compressed directory allowing anyone to run the targets without hydra tool. This file is generated in the module directory next to module.toml. If no build directory exists yet, `hydra` `build` is implicitly ran and then compressed. 
+Create a compressed directory allowing anyone to run the targets without edifice tool. This file is generated in the module directory next to module.toml. If no build directory exists yet, `edifice` `build` is implicitly ran and then compressed. 
 
 The compressed directory contains:
 - Makefile / Script
@@ -11,7 +11,7 @@ The compressed directory contains:
 
 ## Synopsys
 
-`hydra` `export` [*option*]
+`edifice` `export` [*option*]
 
 ## Options
 
@@ -25,8 +25,8 @@ The compressed directory contains:
 
 ## Examples
 
-`hydra` `export`
+`edifice` `export`
 
-`hydra` `export` --format zip
+`edifice` `export` --format zip
 
-`hydra` `export` --name issue_1234
+`edifice` `export` --name issue_1234

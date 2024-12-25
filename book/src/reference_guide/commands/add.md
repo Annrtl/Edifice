@@ -6,10 +6,10 @@ Add a dependency to the current directory module.
 
 ## Synopsys
 
-`hydra` `add` [*option*] *name*
+`edifice` `add` [*option*] *name*
 - Where *name* is a String.
 
-`hydra` `add` [*option*] *name*@*version_requirement*
+`edifice` `add` [*option*] *name*@*version_requirement*
 - Where *name* is a String.
 - Where *version_requirement* is a String with respecting the format of [VersionReq](https://docs.rs/semver/latest/semver/struct.VersionReq.html).
 
@@ -21,8 +21,8 @@ Add a dependency to the current directory module.
 
 ## Examples
 
-`hydra` `add` dff
+`edifice` `add` dff
 
-`hydra` `add` dff@0.1.4
+`edifice` `add` dff@0.1.4
 
-`hydra` `add` dff@^0.1.0
+`edifice` `add` dff@^0.1.0

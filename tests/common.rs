@@ -81,7 +81,7 @@ pub fn create_module(content: String) -> Result<(), String> {
 pub fn create_generic_module() -> Result<(), String> {
     let content = r#"
         [module]
-        name = "hydra"
+        name = "edifice"
         version = "0.1.0"
 
         [dependencies]
@@ -93,7 +93,7 @@ pub fn create_generic_module() -> Result<(), String> {
 pub fn create_local_module() -> Result<(), String> {
     let content = r#"
         [module]
-        name = "hydra"
+        name = "edifice"
         version = "0.1.0"
 
         [dependencies]
@@ -105,8 +105,8 @@ pub fn create_local_module() -> Result<(), String> {
 #[allow(dead_code)]
 pub fn set_git_provider() -> Result<(), String> {
     env::set_var(
-        "HYDRA_PROVIDERS",
-        //"git@github.com:Annrtl/hydra_registry.git",
+        "EDIFICE_PROVIDERS",
+        //"git@github.com:Annrtl/edifice_registry.git",
         "git@github.com:Annrtl/fusesoc-cores.git",
     );
 
@@ -118,7 +118,7 @@ pub fn set_git_provider() -> Result<(), String> {
 
 #[allow(dead_code)]
 pub fn get_provider_hash() -> u32 {
-    let provider = match env::var("HYDRA_PROVIDERS") {
+    let provider = match env::var("EDIFICE_PROVIDERS") {
         Ok(provider) => provider,
         Err(err) => panic!("Failed to get provider: {}", err),
     };
@@ -129,13 +129,13 @@ pub fn get_provider_hash() -> u32 {
 pub fn set_cache_path() -> Result<(), std::io::Error> {
     let test_path = get_test_path()?;
     let cache_path = test_path.join("cache");
-    env::set_var("HYDRA_CACHE", cache_path.clone());
+    env::set_var("EDIFICE_CACHE", cache_path.clone());
     Ok(())
 }
 
 #[allow(dead_code)]
 pub fn get_cache_path() -> Result<PathBuf, std::io::Error> {
-    let path_string = match env::var("HYDRA_CACHE") {
+    let path_string = match env::var("EDIFICE_CACHE") {
         Ok(path) => path,
         Err(err) => panic!("Failed to get cache path: {}", err),
     };
@@ -160,8 +160,8 @@ pub fn set_local_provider() -> Result<(), String> {
     };
 
     env::set_var(
-        "HYDRA_PROVIDERS",
-        //"git@github.com:Annrtl/hydra_registry.git",
+        "EDIFICE_PROVIDERS",
+        //"git@github.com:Annrtl/edifice_registry.git",
         format!("{}/local_provider", tests_path.display()),
     );
 
@@ -184,7 +184,7 @@ pub fn set_both_providers() -> Result<(), String> {
 
     let providers = providers.join(";");
 
-    env::set_var("HYDRA_PROVIDERS", &providers);
+    env::set_var("EDIFICE_PROVIDERS", &providers);
 
     // Create module that use module only remote modules
     create_generic_module()?;
@@ -218,20 +218,20 @@ pub fn run_command(args: &[&str], exp_fail: Option<bool>) -> std::process::Outpu
     };
 
     // Run the command
-    let output = std::process::Command::new(env!("CARGO_BIN_EXE_hydra"))
+    let output = std::process::Command::new(env!("CARGO_BIN_EXE_edifice"))
         .current_dir(&test_path)
         .args(args)
         .output()
         .expect("Failed to execute binary");
 
-    // write stdout to hydra.stdout
+    // write stdout to edifice.stdout
     let stdout = match String::from_utf8(output.clone().stdout) {
         Ok(data) => data,
         Err(err) => panic!("Failed to get stdout: {}", err),
     };
 
     // Write stdout
-    let stdout_file_path = test_path.join("hydra.stdout");
+    let stdout_file_path = test_path.join("edifice.stdout");
     let mut stdout_file = OpenOptions::new()
         .append(true)
         .create(true)
@@ -245,14 +245,14 @@ pub fn run_command(args: &[&str], exp_fail: Option<bool>) -> std::process::Outpu
         .write(&stdout.as_bytes())
         .expect("Failed to write to stdout file");
 
-    // write stderr to hydra.stderr
+    // write stderr to edifice.stderr
     let stderr = match String::from_utf8(output.clone().stderr) {
         Ok(data) => data,
         Err(err) => panic!("Failed to get stderr: {}", err),
     };
 
     // Write stderr
-    let stderr_file_path = test_path.join("hydra.stderr");
+    let stderr_file_path = test_path.join("edifice.stderr");
     let mut stderr_file = OpenOptions::new()
         .append(true)
         .create(true)

@@ -6,7 +6,7 @@ Update the cache of remote providers. This command should no be used if the regi
 
 ## Synopsys
 
-`hydra` `fetch` [*option*]
+`edifice` `fetch` [*option*]
 
 ## Options
 
@@ -14,4 +14,4 @@ Update the cache of remote providers. This command should no be used if the regi
 
 ## Examples
 
-`hydra` `fetch`
+`edifice` `fetch`

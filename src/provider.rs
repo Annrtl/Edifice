@@ -7,11 +7,11 @@ use crate::module::{parser::get_module_files, ModuleFile};
 pub mod git;
 
 pub fn get_providers() -> Result<Vec<String>, String> {
-    let providers = match env::var("HYDRA_PROVIDERS") {
+    let providers = match env::var("EDIFICE_PROVIDERS") {
         Ok(data) => data,
         Err(_) => {
             return Err(
-                "No provider URI found from environment variable: HYDRA_PROVIDERS".to_string(),
+                "No provider URI found from environment variable: EDIFICE_PROVIDERS".to_string(),
             );
         }
     };
@@ -28,9 +28,9 @@ fn get_cache_path() -> Result<PathBuf, String> {
         None => return Err("Failed to get home directory".to_string()),
     };
 
-    let cache_dir = match env::var("HYDRA_CACHE") {
+    let cache_dir = match env::var("EDIFICE_CACHE") {
         Ok(data) => PathBuf::from(data),
-        Err(_) => home_path.join(".cache/hydra"),
+        Err(_) => home_path.join(".cache/edifice"),
     };
 
     Ok(cache_dir)
@@ -115,6 +115,8 @@ pub fn get_providers_modules_path() -> Result<Vec<PathBuf>, String> {
     };
 
     let mut providers_modules_path = Vec::new();
+
+    providers_modules_path.push(PathBuf::from("."));
 
     for provider in providers {
         if provider.starts_with("/") {

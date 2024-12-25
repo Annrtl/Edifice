@@ -6,7 +6,7 @@ Check the requirements of the module is satisfiable.
 
 ## Synopsys
 
-`hydra` `check` [*option*]
+`edifice` `check` [*option*]
 
 ## Options
 
@@ -16,6 +16,6 @@ Check the requirements of the module is satisfiable.
 
 ## Examples
 
-`hydra` `build`
+`edifice` `build`
 
-`hydra` `build` --unique
+`edifice` `build` --unique

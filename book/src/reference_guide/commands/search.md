@@ -6,7 +6,7 @@ Search for a module according its name and its description.
 
 ## Synopsys
 
-`hydra` `search` [*option*] *words*
+`edifice` `search` [*option*] *words*
 
 ## Options
 
@@ -16,10 +16,10 @@ Search for a module according its name and its description.
 
 ## Examples
 
-`hydra` `search`
+`edifice` `search`
 
-`hydra` `search` 'primitive component'
+`edifice` `search` 'primitive component'
 
-`hydra` `search` --locked
+`edifice` `search` --locked
 
-`hydra` `search` --locked 'primitive component' 
+`edifice` `search` --locked 'primitive component' 

@@ -6,7 +6,7 @@ Remove the cache of the remote registry.
 
 ## Synopsys
 
-`hydra` `prune` [*option*]
+`edifice` `prune` [*option*]
 
 ## Options
 
@@ -14,4 +14,4 @@ Remove the cache of the remote registry.
 
 ## Examples
 
-`hydra` `prune`
+`edifice` `prune`

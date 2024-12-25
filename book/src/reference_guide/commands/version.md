@@ -2,11 +2,11 @@
 
 ## Description
 
-Display the version of Hydra
+Display the version of Edifice
 
 ## Synopsys
 
-`hydra` `version` [*option*]
+`edifice` `version` [*option*]
 
 ## Options
 
@@ -14,4 +14,4 @@ Display the version of Hydra
 
 ## Examples
 
-`hydra` `version`
+`edifice` `version`

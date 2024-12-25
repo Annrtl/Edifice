@@ -153,6 +153,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "edifice"
+version = "0.1.0"
+dependencies = [
+ "clap",
+ "crc32fast",
+ "function_name",
+ "git2",
+ "glob",
+ "home",
+ "indexmap",
+ "semver",
+ "serde",
+ "serial_test",
+ "tabled",
+ "toml",
+]
+
+[[package]]
 name = "equivalent"
 version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -311,24 +329,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e3d1354bf6b7235cb4a0576c2619fd4ed18183f689b12b006a0ee7329eeff9a5"
 dependencies = [
  "windows-sys 0.52.0",
-]
-
-[[package]]
-name = "hydra"
-version = "0.1.0"
-dependencies = [
- "clap",
- "crc32fast",
- "function_name",
- "git2",
- "glob",
- "home",
- "indexmap",
- "semver",
- "serde",
- "serial_test",
- "tabled",
- "toml",
 ]
 
 [[package]]
