@@ -19,7 +19,9 @@ enum Commands {
     Check {},
     Fetch {},
     Install {},
-    List {},
+    List {
+        pattern: Option<String>,
+    },
     Info {},
     Update {},
 }
@@ -65,8 +67,8 @@ fn main() -> Result<(), String> {
                 Err(err) => return Err(err),
             };
         }
-        Some(Commands::List {}) => {
-            match list::list() {
+        Some(Commands::List {pattern}) => {
+            match list::list(pattern) {
                 Ok(_) => return Ok(()),
                 Err(err) => return Err(err),
             };

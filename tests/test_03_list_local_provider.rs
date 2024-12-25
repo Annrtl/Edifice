@@ -37,8 +37,24 @@ fn test_list_local_provider() {
         Ok(data) => data,
         Err(err) => panic!("Failed to get stdout: {}", err),
     };
-    println!("{}", stdout);
-    assert!(stdout.contains("edifice"));
-    assert!(stdout.contains("wb_streamer"));
+    
+    // Check output
+    assert!(stdout.contains("| edifice"));
+    assert!(stdout.contains("| wb_streamer"));
     assert!(stdout.contains("| local"));
+
+    // Run the test
+    let output = run_command(&vec!["list", "wb"], None);
+    assert!(output.status.success());
+
+    // Vérifier le contenu de la sortie standard
+    let stdout = match String::from_utf8(output.stdout) {
+        Ok(data) => data,
+        Err(err) => panic!("Failed to get stdout: {}", err),
+    };
+    
+    // Check output
+    assert!(!stdout.contains("| edifice"));
+    assert!(stdout.contains("| wb_streamer"));
+    assert!(!stdout.contains("| local"));
 }
