@@ -4,8 +4,6 @@ use semver::VersionReq;
 
 use crate::module::parser::get_module_file;
 
-use super::check::check;
-
 /// Add a module to the project
 pub fn add(module: String, dry_run: bool) -> Result<(), String> {
     let mut module_file = match get_module_file(None) {
@@ -33,22 +31,8 @@ pub fn add(module: String, dry_run: bool) -> Result<(), String> {
     dependencies.insert(module_name.to_string(), module_version);
     module_file.dependencies = Some(dependencies);
 
-    // Overwrite the module file
-    let module_file_path = PathBuf::from("module.toml");
-
-    let content = match toml::to_string(&module_file) {
+    let resolved_modules = match module_file.solve() {
         Ok(data) => data,
-        Err(err) => return Err(format!("Error serializing module file: {:?}", err)),
-    };
-
-    match std::fs::write(module_file_path, content) {
-        Ok(_) => (),
-        Err(err) => return Err(format!("Error writing module file: {:?}", err)),
-    }
-
-    // Use the check command to resolve the module
-    let resolved_modules = match check() {
-        Ok(res) => res,
         Err(err) => return Err(err),
     };
 

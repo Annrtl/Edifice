@@ -43,6 +43,19 @@ fn test_add_module() {
     };
 
     assert!(stdout.contains("Resolved version of module local: 1.0.0"));
+    
+    // Check module file DO NOT contains the local module
+    let module_file_path = match get_test_path() {
+        Ok(data) => data.join("module.toml"),
+        Err(err) => panic!("Error getting test path: {:?}", err),
+    };
+
+    let module_file_content = match std::fs::read_to_string(&module_file_path) {
+        Ok(data) => data,
+        Err(err) => panic!("Error reading module file: {:?}", err),
+    };
+
+    assert!(!module_file_content.contains("local = "));
 
     // Run the test
     let output = run_command(&vec!["add", "local"], None);

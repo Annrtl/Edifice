@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 pub mod dfs;
 pub mod lock;
 pub mod parser;
+pub mod solve;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Module {
