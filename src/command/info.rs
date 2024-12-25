@@ -2,7 +2,7 @@ use tabled::{Table, Tabled};
 
 use crate::module::parser::get_module_file;
 
-/// Info the module information
+/// Display the module information
 #[derive(Tabled)]
 struct ModuleDispay {
     name: String,

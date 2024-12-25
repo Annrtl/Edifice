@@ -5,7 +5,7 @@ use crate::{
     provider::{get_providers_modules_path, update_providers_cache},
 };
 
-/// Info the module information
+/// Display the module information
 #[derive(Tabled)]
 struct ModuleDispay {
     name: String,
