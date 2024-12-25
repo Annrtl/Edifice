@@ -4,7 +4,6 @@ use crate::module::parser::get_module_file;
 
 /// Check the satisfiability of the module
 pub fn check() -> Result<Vec<(String, Version)>, String> {
-
     let top_module = match get_module_file(None) {
         Ok(data) => data,
         Err(err) => return Err(err),
