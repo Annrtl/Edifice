@@ -1,7 +1,0 @@
-[module]
-name="local"
-version="1.0.0"
-
-[dependencies]
-wb_streamer = "1.1.0"
-

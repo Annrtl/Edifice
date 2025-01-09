@@ -1,4 +1,7 @@
-use crate::{command::update::update, provider::git::clone_and_checkout};
+use crate::{
+    command::update::update, modules::lock_file_content::LockFileContent,
+    registries::git::clone_and_checkout,
+};
 
 /// Install source from locked packages
 pub fn install() -> Result<(), String> {
@@ -20,7 +23,7 @@ pub fn install() -> Result<(), String> {
     };
 
     // Parse lock file
-    let lock_file: crate::module::LockFile = match toml::from_str(&content) {
+    let lock_file_content: LockFileContent = match toml::from_str(&content) {
         Ok(data) => data,
         Err(err) => return Err(format!("Error parsing lock file: {:?}", err)),
     };
@@ -35,7 +38,7 @@ pub fn install() -> Result<(), String> {
     }
 
     // Install packages
-    for package in &lock_file.packages {
+    for package in &lock_file_content.packages {
         // Create package directory
         let package_path = modules_path.join(package.name.clone());
 

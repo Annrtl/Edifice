@@ -1,15 +1,20 @@
 use semver::Version;
 
-use crate::module::parser::get_module_file;
+use crate::origins::get_main_origin;
 
 /// Check the satisfiability of the module
 pub fn check() -> Result<Vec<(String, Version)>, String> {
-    let top_module = match get_module_file(None) {
+    let mut main_origin = match get_main_origin() {
         Ok(data) => data,
         Err(err) => return Err(err),
     };
 
-    let resolve_modules = match top_module.solve() {
+    let module_file = match main_origin.get_modulefile() {
+        Ok(data) => data,
+        Err(err) => return Err(err),
+    };
+
+    let resolve_modules = match module_file.solve() {
         Ok(data) => data,
         Err(err) => return Err(err),
     };

@@ -1,11 +1,12 @@
 use clap::{Parser, Subcommand};
 
 use edifice::command::add;
+use edifice::command::build;
 use edifice::command::check;
 use edifice::command::fetch;
+use edifice::command::info;
 use edifice::command::install;
 use edifice::command::list;
-use edifice::command::info;
 use edifice::command::update;
 
 #[derive(Subcommand)]
@@ -16,6 +17,7 @@ enum Commands {
         #[arg(short, long)]
         dry: bool,
     },
+    Build {},
     Check {},
     Fetch {},
     Install {},
@@ -49,6 +51,12 @@ fn main() -> Result<(), String> {
                 Err(err) => return Err(err),
             };
         }
+        Some(Commands::Build {}) => {
+            match build::build() {
+                Ok(_) => return Ok(()),
+                Err(err) => return Err(err),
+            };
+        }
         Some(Commands::Check {}) => {
             match check::check() {
                 Ok(_) => return Ok(()),
@@ -67,7 +75,7 @@ fn main() -> Result<(), String> {
                 Err(err) => return Err(err),
             };
         }
-        Some(Commands::List {pattern}) => {
+        Some(Commands::List { pattern }) => {
             match list::list(pattern) {
                 Ok(_) => return Ok(()),
                 Err(err) => return Err(err),

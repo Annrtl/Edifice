@@ -1,6 +1,6 @@
 mod common;
 use common::{
-    clean_test_space, get_test_path, init_context, run_command, set_both_providers, set_cache_path,
+    clean_test_space, get_test_path, init_context, run_command, set_both_registries, set_cache_path,
 };
 
 use function_name::named;
@@ -18,9 +18,9 @@ fn test_add_module() {
         Err(err) => panic!("Failed to clean test space: {}", err),
     };
 
-    match set_both_providers() {
+    match set_both_registries() {
         Ok(_) => (),
-        Err(err) => panic!("Failed to set local provider: {}", err),
+        Err(err) => panic!("Failed to set local registry: {}", err),
     };
 
     match set_cache_path() {

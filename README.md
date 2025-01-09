@@ -1,3 +1,6 @@
+# Introduction
+In-dev prototype of a generic package manager to be mainly used for EDA projects. The goal is to answer to Fusesoc limitations.
+
 # Inspiration
 ## Github searchs
 - topic:package-manager topic: asic

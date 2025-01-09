@@ -1,6 +1,6 @@
-use crate::provider::update_providers_cache;
+use crate::registries::update_registries;
 
-/// Update the providers cache directory
+/// Update the registries cache directory
 pub fn fetch() -> Result<(), String> {
-    update_providers_cache()
+    update_registries()
 }

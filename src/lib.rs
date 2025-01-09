@@ -1,3 +1,5 @@
 pub mod command;
-pub mod module;
-mod provider;
+pub mod dataset;
+pub mod modules;
+pub mod origins;
+pub mod registries;

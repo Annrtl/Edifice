@@ -2,11 +2,17 @@ use std::{collections::HashMap, path::PathBuf};
 
 use semver::VersionReq;
 
-use crate::module::parser::get_module_file;
+use crate::origins::get_main_origin;
 
 /// Add a module to the project
 pub fn add(module: String, dry_run: bool) -> Result<(), String> {
-    let mut module_file = match get_module_file(None) {
+    // Get the module file
+    let mut main_origin = match get_main_origin() {
+        Ok(data) => data,
+        Err(err) => return Err(err),
+    };
+
+    let mut module_file = match main_origin.get_modulefile() {
         Ok(data) => data,
         Err(err) => return Err(err),
     };
@@ -27,9 +33,16 @@ pub fn add(module: String, dry_run: bool) -> Result<(), String> {
     };
 
     // Add dependency to the module file
-    let mut dependencies = module_file.dependencies.unwrap_or(HashMap::new());
+    let mut modulefile_content = match module_file.clone().content {
+        Some(data) => data,
+        None => return Err("Module file content not found".to_string()),
+    };
+
+    let mut dependencies = modulefile_content.dependencies.unwrap_or(HashMap::new());
     dependencies.insert(module_name.to_string(), module_version);
-    module_file.dependencies = Some(dependencies);
+    modulefile_content.dependencies = Some(dependencies);
+
+    module_file.content = Some(modulefile_content.clone());
 
     let resolved_modules = match module_file.solve() {
         Ok(data) => data,
@@ -61,13 +74,13 @@ pub fn add(module: String, dry_run: bool) -> Result<(), String> {
     };
 
     // Update dependency version
-    let mut dependencies = module_file.dependencies.unwrap_or(HashMap::new());
+    let mut dependencies = modulefile_content.dependencies.unwrap_or(HashMap::new());
     dependencies.remove(module_name);
     dependencies.insert(module_name.to_string(), module_version_req);
-    module_file.dependencies = Some(dependencies);
+    modulefile_content.dependencies = Some(dependencies);
 
     // Overwrite the module file
-    let content = match toml::to_string(&module_file) {
+    let content = match toml::to_string(&modulefile_content) {
         Ok(data) => data,
         Err(err) => return Err(format!("Error serializing module file: {:?}", err)),
     };

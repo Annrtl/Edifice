@@ -7,7 +7,6 @@ use std::{
 };
 
 struct Context {
-    test_name: String,
     tests_path: PathBuf,
     test_path: PathBuf,
 }
@@ -20,7 +19,6 @@ impl Context {
         };
         let test_path = tests_path.join(test_name);
         Context {
-            test_name: test_name.to_string(),
             tests_path: tests_path,
             test_path: test_path,
         }
@@ -49,6 +47,58 @@ pub fn get_test_path() -> Result<PathBuf, std::io::Error> {
         fs::create_dir(&test_path)?;
     }
     Ok(test_path)
+}
+
+fn create_dataset(content: String) -> Result<(), String> {
+    // Get test path
+    let tests_path = match get_test_path() {
+        Ok(path) => path,
+        Err(err) => return Err(format!("Failed to get test path: {}", err)),
+    };
+
+    // Set dataset path
+    let dataset_path = tests_path.join("dataset.toml");
+
+    // Check if dataset file exists
+    if dataset_path.exists() {
+        match fs::remove_file(&dataset_path) {
+            Ok(_) => (),
+            Err(err) => return Err(format!("Failed to remove dataset file: {}", err)),
+        }
+    }
+
+    // Create dataset file
+    let mut dataset_file = match File::create(&dataset_path) {
+        Ok(file) => file,
+        Err(err) => return Err(format!("Failed to create dataset file: {}", err)),
+    };
+    dataset_file.write_all(content.as_bytes()).unwrap();
+    Ok(())
+}
+
+pub fn create_local_dataset() -> Result<(), String> {
+    let content = r#"
+        dataset_api = "0.1.0"
+
+        [dataset.bfm]
+        dataset_type = "eda"
+        sources = [
+        "rtl/verilog/wb_stream_reader_cfg.v",
+        "rtl/verilog/wb_stream_reader_ctrl.v",
+        "rtl/verilog/wb_stream_writer_fifo.v",
+        "rtl/verilog/wb_stream_reader.v",
+        "rtl/verilog/wb_stream_writer_cfg.v",
+        "rtl/verilog/wb_stream_writer_ctrl.v",
+        "rtl/verilog/wb_stream_writer.v",
+        ]
+        include_directories = []
+        compilation_options = []
+        prepend = [
+        "fifo.rtl",
+        "stream_utils.rtl",
+        ]
+    "#;
+    create_dataset(content.to_string())
 }
 
 pub fn create_module(content: String) -> Result<(), String> {
@@ -103,9 +153,9 @@ pub fn create_local_module() -> Result<(), String> {
 }
 
 #[allow(dead_code)]
-pub fn set_git_provider() -> Result<(), String> {
+pub fn set_git_registry() -> Result<(), String> {
     env::set_var(
-        "EDIFICE_PROVIDERS",
+        "EDIFICE_REGISTRIES",
         //"git@github.com:Annrtl/edifice_registry.git",
         "git@github.com:Annrtl/fusesoc-cores.git",
     );
@@ -117,12 +167,14 @@ pub fn set_git_provider() -> Result<(), String> {
 }
 
 #[allow(dead_code)]
-pub fn get_provider_hash() -> u32 {
-    let provider = match env::var("EDIFICE_PROVIDERS") {
-        Ok(provider) => provider,
-        Err(err) => panic!("Failed to get provider: {}", err),
+pub fn get_registry_hash() -> u32 {
+    let registry = match env::var("EDIFICE_REGISTRIES") {
+        Ok(registry) => registry,
+        Err(err) => panic!("Failed to get registry: {}", err),
     };
-    crc32fast::hash(provider.as_bytes())
+    let crc = crc32fast::hash(registry.as_bytes());
+    println!("Hash of registry {}: {:x}", registry, crc);
+    crc
 }
 
 #[allow(dead_code)]
@@ -152,7 +204,7 @@ pub fn get_modules_path() -> Result<PathBuf, std::io::Error> {
 }
 
 #[allow(dead_code)]
-pub fn set_local_provider() -> Result<(), String> {
+pub fn set_local_registry() -> Result<(), String> {
     // Get test path
     let tests_path = match get_tests_path() {
         Ok(path) => path,
@@ -160,9 +212,9 @@ pub fn set_local_provider() -> Result<(), String> {
     };
 
     env::set_var(
-        "EDIFICE_PROVIDERS",
+        "EDIFICE_REGISTRIES",
         //"git@github.com:Annrtl/edifice_registry.git",
-        format!("{}/local_provider", tests_path.display()),
+        format!("{}/local_registry", tests_path.display()),
     );
 
     // Create module that use module local
@@ -171,20 +223,20 @@ pub fn set_local_provider() -> Result<(), String> {
     Ok(())
 }
 
-pub fn set_both_providers() -> Result<(), String> {
+pub fn set_both_registries() -> Result<(), String> {
     let tests_path = match get_tests_path() {
         Ok(path) => path,
         Err(err) => return Err(format!("Failed to get test path: {}", err)),
     };
 
-    let providers: Vec<String> = vec![
-        format!("{}/local_provider", tests_path.display()),
+    let registries: Vec<String> = vec![
+        format!("{}/local_registry", tests_path.display()),
         "git@github.com:Annrtl/fusesoc-cores.git".to_string(),
     ];
 
-    let providers = providers.join(";");
+    let registries = registries.join(";");
 
-    env::set_var("EDIFICE_PROVIDERS", &providers);
+    env::set_var("EDIFICE_REGISTRIES", &registries);
 
     // Create module that use module only remote modules
     create_generic_module()?;

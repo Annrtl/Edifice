@@ -1,7 +1,0 @@
-[module]
-name="wb_common"
-version="1.0.3"
-
-[provider]
-uri = "git@github.com:Annrtl/wb_common.git"
-commit = "31ac79bfa4ce45b9fc03272d3558250648d9279c"

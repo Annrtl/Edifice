@@ -1,0 +1,91 @@
+# wb_streamer 1.1.0
+[modules.ed47d4e4]
+name="wb_streamer"
+version="1.1.0"
+
+[modules.ed47d4e4.dependencies]
+"fifo"=">=1.0.0"
+"stream_utils"=">=1.1.0"
+"vlog_tb_utils"=">=1.0.0"
+"wb_bfm"=">=1.0.0"
+
+[modules.ed47d4e4.origin]
+uri = "git@github.com:Annrtl/wb_streamer.git"
+commit = "2e85e60f9901adabdf8b9e354b9e95aaf3f189bf"
+
+# wb_bfm 1.2.1
+[modules.96ac149d]
+name="wb_bfm"
+version="1.2.1"
+
+[modules.96ac149d.dependencies]
+"vlog_tb_utils"=">=1.1.0"
+
+[modules.96ac149d.origin]
+uri = "git@github.com:Annrtl/wb_bfm.git"
+commit = "34546a56748b9623563307284929bde52b765c65"
+
+# vlog_tb_utils 1.1.0
+[modules.178c3a99]
+name="vlog_tb_utils"
+version="1.1.0"
+
+[modules.178c3a99.origin]
+uri = "git@github.com:Annrtl/vlog_tb_utils.git"
+commit = "e185f33a3780eb20ec1e56cd8d58f095a2601d24"
+
+# stream_utils 1.3.0
+[modules.c4b98f9c]
+name="stream_utils"
+version="1.3.0"
+
+[modules.c4b98f9c.dependencies]
+"vlog_tb_utils"=">=1.1.0"
+"fifo"=">=1.2.0"
+
+[modules.c4b98f9c.origin]
+uri = "git@github.com:Annrtl/stream_utils.git"
+commit = "009b7e4349e74f54da2faff15b3afef3cf2cc5d2"
+
+# fifo 1.3.0
+[modules.d677b137]
+name="fifo"
+version="1.3.0"
+
+[modules.d677b137.dependencies]
+vlog_tb_utils=">=1.1.0"
+
+[modules.d677b137.origin]
+uri = "git@github.com:Annrtl/fifo.git"
+commit = "fad83baa880db7b3ba61b88fdafdde2a666da05f"
+
+# wb_common 1.0.3
+[modules.27a12f51]
+name="wb_common"
+version="1.0.3"
+
+[modules.27a12f51.origin]
+uri = "git@github.com:Annrtl/wb_common.git"
+commit = "31ac79bfa4ce45b9fc03272d3558250648d9279c"
+
+# local 1.0.0
+[modules.54e460db]
+name="local"
+version="1.0.0"
+
+[modules.54e460db.dependencies]
+wb_streamer = "1.1.0"
+
+[modules.54e460db.origin]
+uri = "../local_module/1.0.0"
+
+# local 1.0.1
+[modules.23e3504d]
+name="local"
+version="1.0.1"
+
+[modules.23e3504d.dependencies]
+wb_streamer = "1.1.0"
+
+[modules.23e3504d.origin]
+uri = "../local_module/1.0.1"

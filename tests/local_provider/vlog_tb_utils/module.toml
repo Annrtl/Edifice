@@ -1,7 +1,0 @@
-[module]
-name="vlog_tb_utils"
-version="1.1.0"
-
-[provider]
-uri = "git@github.com:Annrtl/vlog_tb_utils.git"
-commit = "e185f33a3780eb20ec1e56cd8d58f095a2601d24"
