@@ -1,8 +1,10 @@
 # Introduction
 In-dev prototype of a generic package manager to be mainly used for EDA projects. The goal is to answer to Fusesoc limitations.
 
+Book is under development: https://annrtl.github.io/Edifice/
+
 # Inspiration
-## Github searchs
+## Github searches
 - topic:package-manager topic: asic
 - topic:package-manager topic: fpga
 - topic:package-manager topic: eda
