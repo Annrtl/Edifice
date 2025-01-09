@@ -27,5 +27,4 @@ jobs:
       uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        external_repository: Annrtl/Edifice_book
         publish_dir: ./book/book
