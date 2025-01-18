@@ -2,6 +2,11 @@
 name = "edifice"
 version = "0.1.0"
 edition = "2021"
+authors = ["AnnRTL"]
+
+[[bin]]
+name = "edifice"
+path = "src/main.rs"
 
 [dependencies]
 clap = { version = "4.5.19", features = ["derive"] }
