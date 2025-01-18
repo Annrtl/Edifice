@@ -24,5 +24,22 @@ pub struct DatasetFileContent {
 #[derive(Clone, Debug)]
 pub struct DatasetFile {
     pub path: PathBuf,
-    pub content: DatasetFileContent,
+    pub content: Option<DatasetFileContent>,
+}
+
+impl DatasetFile {
+    pub fn save(&self) -> Result<(), String> {
+
+        let content = match toml::to_string(&self.content) {
+            Ok(data) => data,
+            Err(err) => return Err(format!("Failed to serialize dataset file: {}", err)),
+        };
+
+        let path = self.path.clone();
+
+        match std::fs::write(path, content) {
+            Ok(_) => Ok(()),
+            Err(err) => Err(format!("Failed to write dataset file: {}", err)),
+        }
+    }
 }

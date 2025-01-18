@@ -16,7 +16,7 @@ impl DatasetFile {
 
         let dataset_file = DatasetFile {
             path: path.clone(),
-            content: dataset_file_content,
+            content: Some(dataset_file_content),
         };
 
         Ok(dataset_file)

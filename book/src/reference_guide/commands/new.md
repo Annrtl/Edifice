@@ -6,9 +6,8 @@ Create a new project directory containing the minimal configuration files to run
 
 ``` shell
 my_project/
+├── .gitignore
 ├── dataset.toml
-├── doc
-├── include
 ├── module.toml
 ├── README.md
 ├── src

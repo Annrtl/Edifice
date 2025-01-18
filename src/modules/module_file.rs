@@ -55,6 +55,27 @@ impl ModuleFile {
         Ok(())
     }
 
+    pub fn save(&self) -> Result<(), String> {
+        let path_str = match self.path.to_str() {
+            Some(data) => data,
+            None => return Err("Error getting path string".to_string()),
+        };
+
+        // Sérialiser la structure Rust en fichier TOML
+        let content = match toml::to_string_pretty(&self.content) {
+            Ok(data) => data,
+            Err(err) => return Err(format!("Error serializing module file: {:?}", err)),
+        };
+
+        // Écrire le contenu dans le fichier
+        match fs::write(self.path.clone(), content) {
+            Ok(_) => (),
+            Err(err) => return Err(format!("Error writing module file {}: {}", path_str, err)),
+        }
+
+        Ok(())
+    }
+
     pub fn solve(&self) -> Result<Vec<(String, Version)>, String> {
         match update_registries() {
             Ok(_) => println!("Registries cache updated"),

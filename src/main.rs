@@ -20,11 +20,14 @@ enum Commands {
     Build {},
     Check {},
     Fetch {},
+    Info {},
     Install {},
     List {
         pattern: Option<String>,
     },
-    Info {},
+    New {
+        name: Option<String>,
+    },
     Update {},
 }
 
@@ -69,6 +72,12 @@ fn main() -> Result<(), String> {
                 Err(err) => return Err(err),
             };
         }
+        Some(Commands::Info {}) => {
+            match info::info() {
+                Ok(_) => return Ok(()),
+                Err(err) => return Err(err),
+            };
+        }
         Some(Commands::Install {}) => {
             match install::install() {
                 Ok(_) => return Ok(()),
@@ -81,11 +90,16 @@ fn main() -> Result<(), String> {
                 Err(err) => return Err(err),
             };
         }
-        Some(Commands::Info {}) => {
-            match info::info() {
-                Ok(_) => return Ok(()),
-                Err(err) => return Err(err),
-            };
+        Some(Commands::New { name }) => {
+            match name {
+                Some(name) => {
+                    match edifice::command::new::new(name) {
+                        Ok(_) => return Ok(()),
+                        Err(err) => return Err(err),
+                    };
+                }
+                None => return Err("No name provided".to_string()),
+            }
         }
         Some(Commands::Update {}) => {
             match update::update() {
