@@ -119,6 +119,7 @@ impl ModuleFile {
                 Err(err) => return Err(err),
             };
 
+        #[cfg(debug_assertions)]
         for module in &resolve_modules {
             println!("Module: {}:{} is resolved", module.0, module.1);
         }

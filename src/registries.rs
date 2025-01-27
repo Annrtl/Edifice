@@ -42,7 +42,7 @@ pub fn update_registries() -> Result<(), String> {
 pub fn get_registries() -> Result<Vec<Registry>, String> {
     let registries_env = match env::var("EDIFICE_REGISTRIES") {
         Ok(data) => data,
-        Err(_) => "".to_string(),
+        Err(_) => return Ok(Vec::new()),
     };
 
     let registries_paths = registries_env

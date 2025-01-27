@@ -17,7 +17,7 @@ struct ModuleDispay {
 pub fn list(regex_pattern: Option<String>) -> Result<(), String> {
     match update_registries() {
         Ok(_) => println!("Registries cache updated"),
-        Err(err) => eprintln!("Failed to update registries cache: {}", err),
+        Err(err) => return Err(err),
     }
 
     let regex_pattern = match regex_pattern {
