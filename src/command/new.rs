@@ -2,7 +2,7 @@ use std::{env, fs};
 
 use semver::Version;
 
-use crate::{dataset, modules::{module, module_file::{self}, module_file_content}, target_file};
+use crate::{dataset_file::DatasetFile, dataset_file_content::DatasetFileContent, modules::{module, module_file::{self}, module_file_content}, target_file};
 
 pub fn new(name: String) -> Result<(), String> {
     
@@ -31,6 +31,7 @@ pub fn new(name: String) -> Result<(), String> {
 
     let modulefile = module_file::ModuleFile{
         path: modulefile_path,
+        is_loaded: false,
         content: Some(module_file_content::ModuleFileContent {
             module: module::Module {
                 name: name.clone(),
@@ -39,7 +40,7 @@ pub fn new(name: String) -> Result<(), String> {
             dependencies: None,
             origin: None,
         }),
-        datasetfile: None,
+        datasetfile: DatasetFile::new(module_dir.join("dataset.toml")),
     };
 
     modulefile.save()?;
@@ -48,9 +49,10 @@ pub fn new(name: String) -> Result<(), String> {
 
     let datasetfile_path = module_dir.join("dataset.toml");
 
-    let datasetfile = dataset::DatasetFile{
+    let datasetfile = DatasetFile{
         path: datasetfile_path,
-        content: Some(dataset::DatasetFileContent {
+        is_loaded: false,
+        content: Some(DatasetFileContent {
             dataset_api: Version::new(0, 1, 0),
             dataset: None,
         }),

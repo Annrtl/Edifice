@@ -15,15 +15,27 @@ pub fn build() -> Result<(), String> {
     };
 
     for modulefile in modulefiles {
-        #[cfg(debug_assertions)]
-        println!("Getting dataset file of modulefile {:?}", modulefile);
+        
+        let mut datasetfile = modulefile.datasetfile;
+        
+        if ! datasetfile.is_loaded {
+            match datasetfile.load() {
+                Ok(_) => (),
+                Err(err) => {
+                    eprintln!("Failed to load dataset file: {}", err);
+                    continue;
+                },
+            }
+        }
 
-        let datasetfile = match modulefile.datasetfile {
-            Some(data) => data,
-            None => continue,
-        };
+        #[cfg(debug_assertions)] {
+            let modulefile_name = match modulefile.content {
+                Some(data) => format!("{}:{}", data.module.name, data.module.version),
+                None => continue,
+            };
+            println!("Dataset of module {}: {}", modulefile_name, datasetfile.path.display());
+        }
 
-        println!("Dataset file: {:?}", datasetfile);
     }
 
     #[cfg(debug_assertions)]

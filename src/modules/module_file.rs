@@ -3,8 +3,7 @@ use std::{fs, path::PathBuf};
 use semver::Version;
 
 use crate::{
-    dataset::DatasetFile, modules::dfs::Graph, modules::get_modulefiles,
-    registries::update_registries,
+    dataset_file::DatasetFile, modules::{dfs::Graph, get_modulefiles}, registries::update_registries
 };
 
 use super::module_file_content::ModuleFileContent;
@@ -12,18 +11,38 @@ use super::module_file_content::ModuleFileContent;
 #[derive(Clone, Debug)]
 pub struct ModuleFile {
     pub path: PathBuf,
+    pub is_loaded: bool,
     pub content: Option<ModuleFileContent>,
-    pub datasetfile: Option<DatasetFile>,
+    pub datasetfile: DatasetFile,
 }
 
 impl ModuleFile {
     pub fn new(path: PathBuf) -> Result<Self, String> {
-        let mut modulefile = ModuleFile {
-            path,
-            content: None,
-            datasetfile: None,
+        // Get parent directory of the module file
+        let parent_dir = match path.parent() {
+            Some(data) => data,
+            None => return Err("Error getting parent directory".to_string()),
         };
 
+        // Get dataset file path
+        let datasetfile_path = parent_dir.join("dataset.toml");
+
+        // Create a new dataset file
+        let datasetfile = DatasetFile {
+            path: datasetfile_path,
+            is_loaded: false,
+            content: None,
+        };
+
+        // Create a new module file
+        let mut modulefile = ModuleFile {
+            path,
+            is_loaded: false,
+            content: None,
+            datasetfile: datasetfile,
+        };
+
+        // Load the module file
         match modulefile.load() {
             Ok(_) => (),
             Err(err) => return Err(err),
@@ -33,24 +52,47 @@ impl ModuleFile {
     }
 
     fn load(&mut self) -> Result<(), String> {
+        // Get path string (To be print in error messages)
         let path_str = match self.path.to_str() {
             Some(data) => data,
             None => return Err("Error getting path string".to_string()),
         };
 
-        // Lire le contenu du fichier TOML
+        // Read the module TOML content
         let content = match fs::read_to_string(self.path.clone()) {
             Ok(data) => data,
             Err(err) => return Err(format!("Error reading modulefile {}: {}", path_str, err)),
         };
 
-        // Désérialiser le fichier TOML en une structure Rust
+        // Unserialize the TOML file into struct
         let module_file_content = match toml::from_str::<ModuleFileContent>(content.as_str()) {
             Ok(data) => data,
             Err(err) => return Err(format!("Error deserializing module file: {:?}", err)),
         };
 
+        // Set the content of the module file
         self.content = Some(module_file_content);
+
+        // Get modulefile parent directory
+        let parent_dir = match self.path.parent() {
+            Some(data) => data,
+            None => return Err("Error getting parent directory".to_string()),
+        };
+
+        // Get dataset file path
+        let datasetfile_path = parent_dir.join("dataset.toml");
+
+        // Check if the dataset file exists
+        if datasetfile_path.exists() {
+            // Load the dataset file
+            let datasetfile = DatasetFile::new(datasetfile_path);
+
+            // Set the dataset file
+            self.datasetfile = datasetfile;
+        }
+
+        // Set the is_loaded flag
+        self.is_loaded = true;
 
         Ok(())
     }
